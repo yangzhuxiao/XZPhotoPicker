@@ -18,6 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let rootVC = XZAlbumListController()
         let rootNav = UINavigationController(rootViewController: rootVC)
+        rootNav.navigationBar.barTintColor = NavBgColor
+        rootNav.navigationBar.barStyle = UIBarStyle.BlackOpaque
+        rootNav.navigationBar.translucent = false
         
         let mainWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
         mainWindow.rootViewController = rootNav

@@ -17,8 +17,8 @@ class XZAlbumListCell: UITableViewCell {
     var model: XZAlbumModel? {
         didSet {
             if (model != nil) {
-                let albumName: NSMutableAttributedString = NSMutableAttributedString(string: model!.name as String, attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(16), NSForegroundColorAttributeName: UIColor.blackColor()])
-                let countString: NSMutableAttributedString = NSMutableAttributedString(string: "  (" + String(model!.count) + ")", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(16), NSForegroundColorAttributeName: UIColor.lightGrayColor()])
+                let albumName: NSMutableAttributedString = NSMutableAttributedString(string: model!.name as String, attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(AlbumListTitleFontSize), NSForegroundColorAttributeName: UIColor.blackColor()])
+                let countString: NSMutableAttributedString = NSMutableAttributedString(string: "  (" + String(model!.count) + ")", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(AlbumListTitleFontSize), NSForegroundColorAttributeName: UIColor.lightGrayColor()])
                 albumName.appendAttributedString(countString)
                 titleLabel.attributedText = albumName
             }

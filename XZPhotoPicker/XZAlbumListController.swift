@@ -42,6 +42,10 @@ private extension XZAlbumListController {
         tableView.rowHeight = AlbumListRowHeight
         view.addSubview(tableView)
     }
+    
+    func setupNavigationItem() {
+        
+    }
 }
 
 // MARK: Layout
