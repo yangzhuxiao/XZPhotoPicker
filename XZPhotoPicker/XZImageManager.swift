@@ -44,7 +44,7 @@ extension XZImageManager {
         print("top level user collections count: \(topLevelUserCollections.count)")
         
         let option: PHFetchOptions = PHFetchOptions()
-        option.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+        option.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         for i in 0..<smartAlbums.count {
             let collection = smartAlbums[i] as! PHAssetCollection
             print("localized name of each collection inside smartAlbums: \(collection.localizedTitle)")
@@ -86,13 +86,18 @@ extension XZImageManager {
 // MARK: get photos
 extension XZImageManager {
     func getAlbumListCellCoverImageWithAlbumModel(model: XZAlbumModel, phWidth: CGFloat, completion: (coverImage: UIImage) -> ()) {
-        let coverAsset: PHAsset = model.result?.firstObject as! PHAsset
+        let coverAsset: PHAsset = model.result.firstObject as! PHAsset
         getPhotoWithAsset(coverAsset, photoWidth: phWidth) { (coverImg) in
             completion(coverImage: coverImg)
         }
     }
     func getPhotoWithAsset(asset: PHAsset, photoWidth: CGFloat, completion: (coverImg: UIImage) -> ()) {
-        PHImageManager.defaultManager().requestImageForAsset(asset, targetSize: CGSize(width: photoWidth, height: photoWidth), contentMode: PHImageContentMode.AspectFill, options: nil) { (image, info) in
+        let imgPixelWidth: CGFloat = photoWidth * ImageScaleFactor
+        let imgAspectRatio = CGFloat(asset.pixelWidth)/CGFloat(asset.pixelHeight)
+        let imgPixelHeight = imgPixelWidth / imgAspectRatio
+        let imgSize = CGSize(width: imgPixelWidth, height: imgPixelHeight)
+        
+        PHImageManager.defaultManager().requestImageForAsset(asset, targetSize: imgSize, contentMode: PHImageContentMode.AspectFill, options: nil) { (image, info) in
             completion(coverImg: image!)
         }
     }

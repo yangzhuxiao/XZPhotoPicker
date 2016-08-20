@@ -9,9 +9,10 @@
 import Foundation
 import UIKit
 
-let cellLeftInset: CGFloat = 10
-let cellRightInset: CGFloat = 10
-let rightArrowHeight: CGFloat = 15
+let ScreenWidth: CGFloat = UIScreen.mainScreen().bounds.size.width
+let ScreenHeight: CGFloat = UIScreen.mainScreen().bounds.size.height
+let ImageScaleFactor: CGFloat = 2
+let AlbumListRowHeight: CGFloat = 60
 
 
 

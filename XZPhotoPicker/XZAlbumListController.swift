@@ -39,7 +39,7 @@ private extension XZAlbumListController {
         
         tableView.registerClass(XZAlbumListCell.self, forCellReuseIdentifier: "AlbumCell")
         tableView.dataSource = self
-        tableView.rowHeight = 60
+        tableView.rowHeight = AlbumListRowHeight
         view.addSubview(tableView)
     }
 }
@@ -88,7 +88,7 @@ extension XZAlbumListController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCellWithIdentifier("AlbumCell") as! XZAlbumListCell
         cell.model = currentModel
         cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
-        
+        cell.selectionStyle = UITableViewCellSelectionStyle.None
         return cell
     }
 }

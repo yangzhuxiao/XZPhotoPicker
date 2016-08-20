@@ -13,13 +13,18 @@ import Cartography
 class XZAlbumListCell: UITableViewCell {
     private let titleLabel = UILabel()
     private var coverImageView = UIImageView()
-    private var arrowImageView = UIImageView()
     
     var model: XZAlbumModel? {
         didSet {
-            XZImageManager.manager.getAlbumListCellCoverImageWithAlbumModel(self.model!, phWidth: self.frame.size.width) { (coverImage) in
+            if (model != nil) {
+                let albumName: NSMutableAttributedString = NSMutableAttributedString(string: model!.name as String, attributes: [NSFontAttributeName: UIFont.boldSystemFontOfSize(16), NSForegroundColorAttributeName: UIColor.blackColor()])
+                let countString: NSMutableAttributedString = NSMutableAttributedString(string: "  (" + String(model!.count) + ")", attributes: [NSFontAttributeName: UIFont.systemFontOfSize(16), NSForegroundColorAttributeName: UIColor.lightGrayColor()])
+                albumName.appendAttributedString(countString)
+                titleLabel.attributedText = albumName
+            }
+            
+            XZImageManager.manager.getAlbumListCellCoverImageWithAlbumModel(model!, phWidth: AlbumListRowHeight) { (coverImage) in
                 self.coverImageView.image = coverImage
-                self.titleLabel.text = self.model?.name
             }
         }
     }
@@ -46,7 +51,6 @@ private extension XZAlbumListCell {
         titleLabel.numberOfLines = 0
         contentView.addSubview(titleLabel)
         contentView.addSubview(coverImageView)
-        contentView.addSubview(arrowImageView)
     }
 }
 
@@ -63,14 +67,7 @@ private extension XZAlbumListCell {
         constrain(titleLabel, coverImageView) { (view1, view2) in
             view1.left == view2.right + 10
             view1.centerY == view1.superview!.centerY
-        }
-        constrain(titleLabel, arrowImageView) { (view1, view2) in
-            view2.right == view2.superview!.right - 10
-            view2.width == view2.height
-            view2.height == rightArrowHeight
-            view2.centerY == view2.superview!.centerY
-            
-            view1.right == view2.left - 10
+            view1.right == view1.superview!.right - 50
         }
     }
 }
@@ -79,8 +76,8 @@ private extension XZAlbumListCell {
 private extension XZAlbumListCell {
     func style() {
         contentView.backgroundColor = UIColor.whiteColor()
-        titleLabel.font = UIFont.boldSystemFontOfSize(17)
-        titleLabel.textColor = UIColor.blackColor()
+        coverImageView.contentMode = UIViewContentMode.ScaleAspectFill
+        coverImageView.clipsToBounds = true
     }
 }
 
