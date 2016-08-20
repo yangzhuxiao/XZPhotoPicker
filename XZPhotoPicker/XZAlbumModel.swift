@@ -12,7 +12,7 @@ import Photos
 class XZAlbumModel: NSObject {
     var name: String?
     var count: Int?
-    var result: PHFetchResult?
+    var result: PHFetchResult? // PHFetchResult<PHAsset>
     
     init(result: PHFetchResult, name: String, count: Int) {
         self.name = name

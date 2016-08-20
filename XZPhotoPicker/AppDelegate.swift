@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        let rootVC = XZAlbumPickerController()
+        let rootVC = XZAlbumListController()
         let rootNav = UINavigationController(rootViewController: rootVC)
         
         let mainWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
