@@ -25,26 +25,28 @@ class XZImageManager: NSObject {
     func testSingleton() {
         let sing1 = XZImageManager.manager
         let sing2 = XZImageManager.manager
-        assert(sing1 === sing2, "Singleton clas 'XZImageManager' it is!")
+        if sing1 === sing2 {
+            print("Singleton clas 'XZImageManager' it is!")
+        }
     }
     
     func getAllAlbums(completion: (Array<XZAlbumModel>) -> ()) {
         testSingleton()
-        
         let albumArray = NSMutableArray()
+        
         let smartAlbums: PHFetchResult = PHAssetCollection.fetchAssetCollectionsWithType(PHAssetCollectionType.SmartAlbum, subtype: PHAssetCollectionSubtype.AlbumRegular, options: nil)
         let topLevelUserCollections: PHFetchResult = PHCollectionList.fetchTopLevelUserCollectionsWithOptions(nil)
-        
         
         print("smart albums count: \(smartAlbums.count)")
         print("top level user collections count: \(topLevelUserCollections.count)")
         
-        
+        let option: PHFetchOptions = PHFetchOptions()
+        option.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
         for i in 0..<smartAlbums.count {
             let collection = smartAlbums[i] as! PHAssetCollection
             print("localized name of each collection inside smartAlbums: \(collection.localizedTitle)")
             
-            let fetchResult: PHFetchResult = PHAsset.fetchAssetsInAssetCollection(collection, options: nil)
+            let fetchResult: PHFetchResult = PHAsset.fetchAssetsInAssetCollection(collection, options: option)
 
             if fetchResult.count < 1 {
                 continue
@@ -65,7 +67,7 @@ class XZImageManager: NSObject {
         
         for i in 0..<topLevelUserCollections.count {
             let collection = topLevelUserCollections[i] as! PHAssetCollection
-            let fetchResult: PHFetchResult = PHAsset.fetchAssetsInAssetCollection(collection, options: nil)
+            let fetchResult: PHFetchResult = PHAsset.fetchAssetsInAssetCollection(collection, options: option)
             if fetchResult.count < 1 {
                 continue
             }
@@ -75,6 +77,10 @@ class XZImageManager: NSObject {
         if albumArray.count > 0 {
             completion(albumArray as NSArray as! [XZAlbumModel])
         }
+    }
+    
+    func getAlbumListCellCoverImageWithAlbumModel(model: XZAlbumModel, completion: (coverImage: UIImage) -> ()) {
+        
     }
 }
 
