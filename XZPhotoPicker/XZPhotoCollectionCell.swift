@@ -22,12 +22,8 @@ class XZPhotoCollectionCell: UICollectionViewCell {
     var model: XZAssetModel? {
         didSet {
             if model != nil {
+                setupSubviews()
                 representedAssetIdentifier = XZImageManager.manager.getAssetIdentifier(self.model!.asset)
-                
-                setup()
-//                layoutView()
-//                style()
-                
                 let imageRequestID: PHImageRequestID = XZImageManager.manager.getPhotoWithAsset(self.model!.asset, photoWidth: CGFloat(PhotoCollectionCell_PhotoWidth), completion: { (img) in
                     
                     if self.representedAssetIdentifier! == XZImageManager.manager.getAssetIdentifier(self.model!.asset) {
@@ -35,20 +31,15 @@ class XZPhotoCollectionCell: UICollectionViewCell {
                         weakSelf!.photoImageView?.image = img
                     } else {
                         print("*******-------this cell is showing other asset-------*******")
-                        
                         if self.imageRequestID != 0 {
                             PHImageManager.defaultManager().cancelImageRequest(self.imageRequestID)
                         }
                     }
                 })
                 
-                print("self.imageRequestID: ", self.imageRequestID, "----imageRequestID: ", imageRequestID)
-                print("outer...")
-                if imageRequestID != 0 && self.imageRequestID != 0 && imageRequestID != self.imageRequestID {
-                    print("before cancelImageRequest...")
-                    PHImageManager.defaultManager().cancelImageRequest(self.imageRequestID)
-                    print("after cancelImageRequest...")
-                }
+//                if imageRequestID != 0 && self.imageRequestID != 0 && imageRequestID != self.imageRequestID {
+//                    PHImageManager.defaultManager().cancelImageRequest(self.imageRequestID)
+//                }
                 
                 self.imageRequestID = imageRequestID
                 self.checkmarkButton?.selected = model!.selected
@@ -64,57 +55,39 @@ class XZPhotoCollectionCell: UICollectionViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-//    override func layoutSubviews() {
-//        super.layoutSubviews()
-//        setup()
-//        layoutView()
-//        style()
-//    }
-    
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        photoImageView.image = nil
-//        checkmarkButton.selected = false
-//        setupCheckmarkImage()
-//    }
 }
 
 // MARK: Setup
 private extension XZPhotoCollectionCell {
-    func setup() {
+    func setupSubviews() {
+        func setupPhotoImageView() {
+            photoImageView = UIImageView()
+            contentView.addSubview(photoImageView!)
+        }
+        func setupCheckmarkImageView() {
+            checkmarkImageView = UIImageView()
+            contentView.addSubview(checkmarkImageView!)
+            setupCheckmarkStatus()
+        }
+        func setupCheckmarkButton() {
+            checkmarkButton = UIButton()
+            checkmarkButton!.addTarget(self, action: #selector(XZPhotoCollectionCell.checkmarkButtonClicked(_:)), forControlEvents: .TouchUpInside)
+            contentView.addSubview(checkmarkButton!)
+        }
+        
         if photoImageView == nil {
             setupPhotoImageView()
             layoutPhotoImageView()
         }
-        
         if checkmarkImageView == nil {
             setupCheckmarkImageView()
             layoutCheckmarkImageView()
+            stylePhotoImageView()
         }
-        
         if checkmarkButton == nil {
             setupCheckmarkButton()
             layoutCheckmarkButton()
-            style()
         }
-    }
-    
-    func setupPhotoImageView() {
-        photoImageView = UIImageView()
-        contentView.addSubview(photoImageView!)
-    }
-    
-    func setupCheckmarkImageView() {
-        checkmarkImageView = UIImageView()
-        contentView.addSubview(checkmarkImageView!)
-        setupCheckmarkStatus()
-    }
-    
-    func setupCheckmarkButton() {
-        checkmarkButton = UIButton()
-        checkmarkButton!.addTarget(self, action: #selector(XZPhotoCollectionCell.checkmarkButtonClicked(_:)), forControlEvents: .TouchUpInside)
-        contentView.addSubview(checkmarkButton!)
     }
     
     func setupCheckmarkStatus() {
@@ -126,12 +99,6 @@ private extension XZPhotoCollectionCell {
 
 // MARK: Layout
 private extension XZPhotoCollectionCell {
-//    func layoutView() {
-//        
-//        
-//        
-//    }
-    
     func layoutPhotoImageView() {
         constrain(photoImageView!) { (view) in
             view.left == view.superview!.left
@@ -161,12 +128,10 @@ private extension XZPhotoCollectionCell {
 
 // MARK: Style
 private extension XZPhotoCollectionCell {
-    func style() {
-        contentView.backgroundColor = UIColor.whiteColor()
+    
+    func stylePhotoImageView() {
         photoImageView!.contentMode = UIViewContentMode.ScaleAspectFill
         photoImageView!.clipsToBounds = true
-        
-        checkmarkButton!.backgroundColor = UIColor.clearColor()
     }
 }
 
