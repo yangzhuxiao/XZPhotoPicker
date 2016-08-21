@@ -23,7 +23,6 @@ class XZImageManager: NSObject {
                 ImageScaleFactor = 2
             }
             
-            
         }
         return Static.instance!
     }
@@ -54,7 +53,8 @@ extension XZImageManager {
         print("top level user collections count: \(topLevelUserCollections.count)")
         
         let option: PHFetchOptions = PHFetchOptions()
-        option.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+        option.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.Image.rawValue)
+
         for i in 0..<smartAlbums.count {
             let collection = smartAlbums[i] as! PHAssetCollection
             
