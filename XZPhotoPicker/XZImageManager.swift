@@ -49,8 +49,8 @@ extension XZImageManager {
         let smartAlbums: PHFetchResult = PHAssetCollection.fetchAssetCollectionsWithType(PHAssetCollectionType.SmartAlbum, subtype: PHAssetCollectionSubtype.AlbumRegular, options: nil)
         let topLevelUserCollections: PHFetchResult = PHCollectionList.fetchTopLevelUserCollectionsWithOptions(nil)
         
-        print("smart albums count: \(smartAlbums.count)")
-        print("top level user collections count: \(topLevelUserCollections.count)")
+//        print("smart albums count: \(smartAlbums.count)")
+//        print("top level user collections count: \(topLevelUserCollections.count)")
         
         let option: PHFetchOptions = PHFetchOptions()
         option.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.Image.rawValue)
@@ -102,7 +102,7 @@ extension XZImageManager {
             completion(coverImage: coverImg)
         }
     }
-    func getPhotoWithAsset(asset: PHAsset, photoWidth: CGFloat, completion: (img: UIImage) -> ()) {
+    func getPhotoWithAsset(asset: PHAsset, photoWidth: CGFloat, completion: (img: UIImage) -> ()) -> PHImageRequestID {
         let imgPixelWidth: CGFloat = photoWidth * ImageScaleFactor
         let imgAspectRatio = CGFloat(asset.pixelWidth)/CGFloat(asset.pixelHeight)
         let imgPixelHeight = imgPixelWidth / imgAspectRatio
@@ -111,9 +111,15 @@ extension XZImageManager {
         let requestOption = PHImageRequestOptions()
         requestOption.resizeMode = PHImageRequestOptionsResizeMode.Fast
         
-        PHImageManager.defaultManager().requestImageForAsset(asset, targetSize: imgSize, contentMode: PHImageContentMode.AspectFill, options: requestOption) { (image, info) in
+        let imageRequestID = PHImageManager.defaultManager().requestImageForAsset(asset, targetSize: imgSize, contentMode: PHImageContentMode.AspectFill, options: requestOption) { (image, info) in
             completion(img: image!)
         }
+        
+        return imageRequestID
+    }
+    
+    func getAssetIdentifier(asset: PHAsset) -> String {
+        return asset.localIdentifier
     }
 }
 
