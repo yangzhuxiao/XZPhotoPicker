@@ -13,10 +13,10 @@ import Photos
 
 class XZPhotoCollectionController: UIViewController {
     private var collectionView: UICollectionView?
-    private var previewButton = UIButton()
-    private var okButton = UIButton()
+    private let previewButton = UIButton()
+    private let okButton = UIButton()
     private let numberOfSelectedLabel = UILabel()
-    private let circleOfNumberImageView = UIImageView()
+    private let circleOfNumberImageView = UIView()
     private let toolBarView = UIView()
     
     var model: XZAlbumModel
@@ -96,6 +96,30 @@ private extension XZPhotoCollectionController {
             view1.right == view1.superview!.right
             view1.bottom == view2.top
         }
+        
+        constrain(previewButton) { (view) in
+            view.top == view.superview!.top
+            view.bottom == view.superview!.bottom
+            view.left == view.superview!.left
+            view.width == view.height * 1.5
+        }
+        
+        constrain(okButton, numberOfSelectedLabel, circleOfNumberImageView) { (view1, view2, view3) in
+            view1.right == view1.superview!.right
+            view1.top == view1.superview!.top
+            view1.bottom == view1.superview!.bottom
+            view1.width == view1.height * 1.5
+            
+            view2.centerY == view2.superview!.centerY
+            view2.width == PhotoCollection_BottomToolBarNumberOfSelectedLabelHeight
+            view2.height == view2.width
+            view2.left == view1.left
+            
+            view3.top == view2.top
+            view3.bottom == view2.bottom
+            view3.left == view2.left
+            view3.right == view2.right
+        }
     }
 }
 
@@ -110,6 +134,27 @@ private extension XZPhotoCollectionController {
         toolBarView.backgroundColor = PhotoCollection_BottomToolBarBgColor
         toolBarView.layer.borderColor = PhotoCollection_BottomToolBarSeparatorColor.CGColor
         toolBarView.layer.borderWidth = 0.5
+        
+        previewButton.setTitle("预览", forState: .Normal)
+        previewButton.setTitle("预览", forState: .Disabled)
+        previewButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        previewButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
+        
+        okButton.setTitle("完成", forState: .Normal)
+        okButton.setTitle("完成", forState: .Selected)
+        okButton.setTitle("完成", forState: .Disabled)
+        okButton.setTitleColor(PhotoCollection_BottomToolBarOKButtonColor, forState: .Normal)
+        okButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
+        okButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+        
+        numberOfSelectedLabel.text = "3"
+        numberOfSelectedLabel.textAlignment = .Center
+        numberOfSelectedLabel.textColor = UIColor.whiteColor()
+        numberOfSelectedLabel.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
+        
+        circleOfNumberImageView.backgroundColor = PhotoCollection_BottomToolBarOKButtonColor
+        circleOfNumberImageView.clipsToBounds = true
+        circleOfNumberImageView.layer.cornerRadius = PhotoCollection_BottomToolBarNumberOfSelectedLabelHeight/2
     }
 }
 

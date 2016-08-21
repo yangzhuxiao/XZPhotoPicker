@@ -36,7 +36,10 @@ let PhotoCollectionCell_Identifier: String = "PhotoCollectionCell"
 
 let PhotoCollection_BottomToolBarBgColor = RGBA(250, green: 250, blue: 250, alpha: 1)
 let PhotoCollection_BottomToolBarSeparatorColor = RGBA(180, green: 180, blue: 180, alpha: 1)
-let PhotoCollection_BottomToolBarHeight: CGFloat = 44
+let PhotoCollection_BottomToolBarHeight: CGFloat = 49
+let PhotoCollection_BottomToolBarOKButtonColor = RGBA(0, green: 220, blue: 0, alpha: 1)
+let PhotoCollection_BottomToolBarNumberOfSelectedLabelHeight: CGFloat = 20
+let PhotoCollection_BottomToolBarFontSize: CGFloat = 16
 
 
 
