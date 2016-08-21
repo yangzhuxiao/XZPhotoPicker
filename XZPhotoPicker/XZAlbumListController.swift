@@ -37,8 +37,9 @@ private extension XZAlbumListController {
     func setup() {
         title = "相册"
         
-        tableView.registerClass(XZAlbumListCell.self, forCellReuseIdentifier: "AlbumCell")
+        tableView.registerClass(XZAlbumListCell.self, forCellReuseIdentifier: AlbumListCell_Identifier)
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.rowHeight = AlbumListRowHeight
         view.addSubview(tableView)
     }
@@ -89,10 +90,27 @@ extension XZAlbumListController: UITableViewDataSource {
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let currentModel: XZAlbumModel = albums[indexPath.row] as! XZAlbumModel
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("AlbumCell") as! XZAlbumListCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(AlbumListCell_Identifier) as! XZAlbumListCell
         cell.model = currentModel
         cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
-        cell.selectionStyle = UITableViewCellSelectionStyle.None
+//        cell.selectionStyle = UITableViewCellSelectionStyle.None
         return cell
     }
 }
+
+// MARK: UITableViewDelegate
+extension XZAlbumListController: UITableViewDelegate {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        let selectedModel: XZAlbumModel = albums[indexPath.row] as! XZAlbumModel
+        navigationController?.pushViewController(XZPhotoCollectionController(model: selectedModel),
+                                                 animated: true)
+    }
+}
+
+
+
+
+
+
+

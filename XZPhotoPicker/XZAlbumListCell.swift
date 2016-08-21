@@ -24,7 +24,8 @@ class XZAlbumListCell: UITableViewCell {
             }
             
             XZImageManager.manager.getAlbumListCellCoverImageWithAlbumModel(model!, phWidth: AlbumListRowHeight) { (coverImage) in
-                self.coverImageView.image = coverImage
+                weak var weakSelf = self
+                weakSelf!.coverImageView.image = coverImage
             }
         }
     }
@@ -80,19 +81,5 @@ private extension XZAlbumListCell {
         coverImageView.clipsToBounds = true
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

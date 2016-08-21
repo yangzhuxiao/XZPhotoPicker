@@ -10,10 +10,20 @@ import Foundation
 import UIKit
 import Photos
 
+var ImageScaleFactor: CGFloat = 0
+
 class XZImageManager: NSObject {
     class var manager: XZImageManager {
         dispatch_once(&Static.onceToke) {
             Static.instance = XZImageManager()
+            
+            if ScreenWidth > 700 {
+                ImageScaleFactor = 1.5
+            } else {
+                ImageScaleFactor = 2
+            }
+            
+            
         }
         return Static.instance!
     }
@@ -47,7 +57,8 @@ extension XZImageManager {
         option.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         for i in 0..<smartAlbums.count {
             let collection = smartAlbums[i] as! PHAssetCollection
-            print("localized name of each collection inside smartAlbums: \(collection.localizedTitle)")
+            
+//            print("localized name of each collection inside smartAlbums: \(collection.localizedTitle)")
             
             let fetchResult: PHFetchResult = PHAsset.fetchAssetsInAssetCollection(collection, options: option)
             
@@ -91,14 +102,17 @@ extension XZImageManager {
             completion(coverImage: coverImg)
         }
     }
-    func getPhotoWithAsset(asset: PHAsset, photoWidth: CGFloat, completion: (coverImg: UIImage) -> ()) {
+    func getPhotoWithAsset(asset: PHAsset, photoWidth: CGFloat, completion: (img: UIImage) -> ()) {
         let imgPixelWidth: CGFloat = photoWidth * ImageScaleFactor
         let imgAspectRatio = CGFloat(asset.pixelWidth)/CGFloat(asset.pixelHeight)
         let imgPixelHeight = imgPixelWidth / imgAspectRatio
         let imgSize = CGSize(width: imgPixelWidth, height: imgPixelHeight)
         
-        PHImageManager.defaultManager().requestImageForAsset(asset, targetSize: imgSize, contentMode: PHImageContentMode.AspectFill, options: nil) { (image, info) in
-            completion(coverImg: image!)
+        let requestOption = PHImageRequestOptions()
+        requestOption.resizeMode = PHImageRequestOptionsResizeMode.Fast
+        
+        PHImageManager.defaultManager().requestImageForAsset(asset, targetSize: imgSize, contentMode: PHImageContentMode.AspectFill, options: requestOption) { (image, info) in
+            completion(img: image!)
         }
     }
 }

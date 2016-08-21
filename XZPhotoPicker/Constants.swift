@@ -11,9 +11,23 @@ import UIKit
 
 let ScreenWidth: CGFloat = UIScreen.mainScreen().bounds.size.width
 let ScreenHeight: CGFloat = UIScreen.mainScreen().bounds.size.height
-let ImageScaleFactor: CGFloat = 2
+
+// MARK: Album List View
 let AlbumListRowHeight: CGFloat = 60
 let AlbumListTitleFontSize: CGFloat = 17
+let AlbumListCell_Identifier: String = "AlbumListCell"
+
+
+// MARK: Photo Collection View
+let PhotoCollectionCell_NumOfPhotosInARow: Int = 4
+let PhotoCollectionCell_ClickableAreaRatio: CGFloat = 0.4
+let PhotoCollectionCell_CheckMarkImageSize: CGSize = CGSize(width: 27, height: 27) // 选择对号大小
+let PhotoCollectionCell_CheckMarkImageMargin: CGFloat = 2 // 选择对号上、右边距
+
+let PhotoCollectionCell_XMargin: CGFloat = 2 // collectionViewCell左右侧间距，中间间距应为其1/2
+let PhotoCollectionCell_YMargin = PhotoCollectionCell_XMargin // collectionViewCell上下侧间距，中间间距应为其1/2
+let PhotoCollectionCell_PhotoWidth: Double = (Double(ScreenWidth) - (Double(PhotoCollectionCell_NumOfPhotosInARow - 1) + 2) * Double(PhotoCollectionCell_XMargin)) / 4
+let PhotoCollectionCell_Identifier: String = "PhotoCollectionCell"
 
 func RGBA(red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) -> UIColor {
     return UIColor(red: red/255.0, green: green/255.0, blue: blue/255.0, alpha: alpha/1.0)
