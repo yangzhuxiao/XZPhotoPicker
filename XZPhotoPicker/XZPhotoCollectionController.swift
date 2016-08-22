@@ -60,12 +60,6 @@ private extension XZPhotoCollectionController {
             collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout())
             collectionView!.dataSource = self
             collectionView!.registerClass(XZPhotoCollectionCell.self, forCellWithReuseIdentifier: PhotoCollectionCell_Identifier)
-            collectionView?.contentInset = UIEdgeInsets(top: PhotoCollectionCell_YMargin,
-                                                        left: PhotoCollectionCell_XMargin,
-                                                        bottom: PhotoCollectionCell_YMargin,
-                                                        right: PhotoCollectionCell_XMargin)
-            collectionView?.alwaysBounceVertical = true
-            collectionView?.showsVerticalScrollIndicator = true
             view.addSubview(collectionView!)
         }
     }
@@ -89,21 +83,18 @@ private extension XZPhotoCollectionController {
             view.bottom == view.superview!.bottom + 1
             view.height == PhotoCollection_BottomToolBarHeight
         }
-        
         constrain(collectionView!, toolBarView) { (view1, view2) in
             view1.top == view1.superview!.top
             view1.left == view1.superview!.left
             view1.right == view1.superview!.right
             view1.bottom == view2.top
         }
-        
         constrain(previewButton) { (view) in
             view.top == view.superview!.top
             view.bottom == view.superview!.bottom
             view.left == view.superview!.left
             view.width == view.height * 1.5
         }
-        
         constrain(okButton, numberOfSelectedLabel, circleOfNumberImageView) { (view1, view2, view3) in
             view1.right == view1.superview!.right
             view1.top == view1.superview!.top
@@ -129,32 +120,57 @@ private extension XZPhotoCollectionController {
         view.backgroundColor = UIColor.whiteColor()
         view.clipsToBounds = true
         
-        collectionView!.backgroundColor = UIColor.whiteColor()
+        func styleCollectionView() {
+            collectionView?.backgroundColor = UIColor.whiteColor()
+            collectionView?.contentInset = UIEdgeInsets(top: PhotoCollectionCell_YMargin,
+                                                        left: PhotoCollectionCell_XMargin,
+                                                        bottom: PhotoCollectionCell_YMargin,
+                                                        right: PhotoCollectionCell_XMargin)
+            collectionView?.alwaysBounceVertical = true
+            collectionView?.showsVerticalScrollIndicator = true
+        }
         
-        toolBarView.backgroundColor = PhotoCollection_BottomToolBarBgColor
-        toolBarView.layer.borderColor = PhotoCollection_BottomToolBarSeparatorColor.CGColor
-        toolBarView.layer.borderWidth = 0.5
+        func styleToolBarView() {
+            func styleToolBarContainerView() {
+                toolBarView.backgroundColor = PhotoCollection_BottomToolBarBgColor
+                toolBarView.layer.borderColor = PhotoCollection_BottomToolBarSeparatorColor.CGColor
+                toolBarView.layer.borderWidth = 0.5
+            }
+            func stylePreviewButton() {
+                previewButton.setTitle("预览", forState: .Normal)
+                previewButton.setTitle("预览", forState: .Disabled)
+                previewButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+                previewButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
+            }
+            func styleOKButton() {
+                okButton.setTitle("完成", forState: .Normal)
+                okButton.setTitle("完成", forState: .Selected)
+                okButton.setTitle("完成", forState: .Disabled)
+                okButton.setTitleColor(PhotoCollection_BottomToolBarOKButtonColor, forState: .Normal)
+                okButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
+                okButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+            }
+            func styleNumberLabel() {
+                numberOfSelectedLabel.text = "3"
+                numberOfSelectedLabel.textAlignment = .Center
+                numberOfSelectedLabel.textColor = UIColor.whiteColor()
+                numberOfSelectedLabel.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
+            }
+            func styleNumberCircleView() {
+                circleOfNumberImageView.backgroundColor = PhotoCollection_BottomToolBarOKButtonColor
+                circleOfNumberImageView.clipsToBounds = true
+                circleOfNumberImageView.layer.cornerRadius = PhotoCollection_BottomToolBarNumberOfSelectedLabelHeight/2
+            }
+            
+            styleOKButton()
+            styleNumberLabel()
+            stylePreviewButton()
+            styleNumberCircleView()
+            styleToolBarContainerView()
+        }
         
-        previewButton.setTitle("预览", forState: .Normal)
-        previewButton.setTitle("预览", forState: .Disabled)
-        previewButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
-        previewButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
-        
-        okButton.setTitle("完成", forState: .Normal)
-        okButton.setTitle("完成", forState: .Selected)
-        okButton.setTitle("完成", forState: .Disabled)
-        okButton.setTitleColor(PhotoCollection_BottomToolBarOKButtonColor, forState: .Normal)
-        okButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
-        okButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
-        
-        numberOfSelectedLabel.text = "3"
-        numberOfSelectedLabel.textAlignment = .Center
-        numberOfSelectedLabel.textColor = UIColor.whiteColor()
-        numberOfSelectedLabel.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
-        
-        circleOfNumberImageView.backgroundColor = PhotoCollection_BottomToolBarOKButtonColor
-        circleOfNumberImageView.clipsToBounds = true
-        circleOfNumberImageView.layer.cornerRadius = PhotoCollection_BottomToolBarNumberOfSelectedLabelHeight/2
+        styleToolBarView()
+        styleCollectionView()
     }
 }
 
@@ -173,7 +189,18 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
         let currentAsset: PHAsset = model.result[indexPath.row] as! PHAsset
         cell.model = XZAssetModel(asset: currentAsset)
         cell.didSelectPhotoClosure = { (selected: Bool) -> () in
-            print("model is selected...")
+//            print("model is selected: \(selected)")
+            if !selected {
+                for model in selectedAssets {
+                    if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(cell.model!.asset) {
+                        let indexOfObject = selectedAssets.indexOf(model)
+                        selectedAssets.removeAtIndex(indexOfObject!)
+                    }
+                }
+            } else if selected {
+                selectedAssets.append(cell.model!)
+            }
+            print("count of selectedAssets: \(selectedAssets.count)")
         }
         return cell
     }

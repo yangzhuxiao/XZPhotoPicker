@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+// MARK: Global variables
+var ImageScaleFactor: CGFloat = 0
+var selectedAssets: Array<XZAssetModel> = []
+
+// MARK:
 let ScreenWidth: CGFloat = UIScreen.mainScreen().bounds.size.width
 let ScreenHeight: CGFloat = UIScreen.mainScreen().bounds.size.height
 

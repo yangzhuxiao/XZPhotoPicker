@@ -10,8 +10,6 @@ import Foundation
 import UIKit
 import Photos
 
-var ImageScaleFactor: CGFloat = 0
-
 class XZImageManager: NSObject {
     class var manager: XZImageManager {
         dispatch_once(&Static.onceToke) {
