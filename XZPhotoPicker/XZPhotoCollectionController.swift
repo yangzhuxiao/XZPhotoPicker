@@ -36,6 +36,11 @@ class XZPhotoCollectionController: UIViewController {
         layoutView()
         style()
     }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        refreshBottomToolBarStatus()
+    }
 }
 
 // MARK: Setup
@@ -139,25 +144,27 @@ private extension XZPhotoCollectionController {
             func stylePreviewButton() {
                 previewButton.setTitle("预览", forState: .Normal)
                 previewButton.setTitle("预览", forState: .Disabled)
-                previewButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+                previewButton.setTitleColor(PhotoCollection_BottomToolBarPreviewButtonColor_Normal, forState: .Normal)
+                previewButton.setTitleColor(PhotoCollection_BottomToolBarPreviewButtonColor_Disabled, forState: .Disabled)
                 previewButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
             }
             func styleOKButton() {
                 okButton.setTitle("完成", forState: .Normal)
                 okButton.setTitle("完成", forState: .Selected)
                 okButton.setTitle("完成", forState: .Disabled)
-                okButton.setTitleColor(PhotoCollection_BottomToolBarOKButtonColor, forState: .Normal)
+                okButton.setTitleColor(PhotoCollection_BottomToolBarOKButtonColor_Normal, forState: .Normal)
+                okButton.setTitleColor(PhotoCollection_BottomToolBarOKButtonColor_Disabled, forState: .Disabled)
                 okButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
                 okButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
             }
             func styleNumberLabel() {
-                numberOfSelectedLabel.text = "3"
+                numberOfSelectedLabel.text = ""
                 numberOfSelectedLabel.textAlignment = .Center
                 numberOfSelectedLabel.textColor = UIColor.whiteColor()
                 numberOfSelectedLabel.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
             }
             func styleNumberCircleView() {
-                circleOfNumberImageView.backgroundColor = PhotoCollection_BottomToolBarOKButtonColor
+                circleOfNumberImageView.backgroundColor = PhotoCollection_BottomToolBarOKButtonColor_Normal
                 circleOfNumberImageView.clipsToBounds = true
                 circleOfNumberImageView.layer.cornerRadius = PhotoCollection_BottomToolBarNumberOfSelectedLabelHeight/2
             }
@@ -171,6 +178,27 @@ private extension XZPhotoCollectionController {
         
         styleToolBarView()
         styleCollectionView()
+    }
+}
+
+// MARK: BottomToolBarStatus
+private extension XZPhotoCollectionController {
+    func refreshBottomToolBarStatus() {
+        if SelectedAssets.count > 0 {
+            previewButton.enabled = true
+            okButton.enabled = true
+            numberOfSelectedLabel.hidden = false
+            circleOfNumberImageView.hidden = false
+            
+            numberOfSelectedLabel.text = String(SelectedAssets.count)
+        } else {
+            previewButton.enabled = false
+            okButton.enabled = false
+            numberOfSelectedLabel.hidden = true
+            circleOfNumberImageView.hidden = true
+            
+            numberOfSelectedLabel.text = ""
+        }
     }
 }
 
@@ -196,6 +224,7 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
         cell.model = currentModel
 
         weak var weakCell = cell
+        weak var weakSelf = self
         cell.didSelectPhotoClosure = { (selected: Bool) -> () in
 //            print("model is selected: \(selected)")
             weakCell?.model!.selected = selected
@@ -212,6 +241,7 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
                 SelectedAssets.append(weakCell!.model!)
             }
 //            print("count of selectedAssets: \(selectedAssets.count)")
+            weakSelf!.refreshBottomToolBarStatus()
         }
         return cell
     }
