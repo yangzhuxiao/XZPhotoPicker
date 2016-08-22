@@ -11,7 +11,8 @@ import UIKit
 
 // MARK: Global variables
 var ImageScaleFactor: CGFloat = 0
-var selectedAssets: Array<XZAssetModel> = []
+var SelectedAssets: Array<XZAssetModel> = []
+let MaxPhotosCount: Int = 9
 
 // MARK:
 let ScreenWidth: CGFloat = UIScreen.mainScreen().bounds.size.width

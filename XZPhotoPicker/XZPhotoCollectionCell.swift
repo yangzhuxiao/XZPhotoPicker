@@ -24,12 +24,12 @@ class XZPhotoCollectionCell: UICollectionViewCell {
     var model: XZAssetModel? {
         didSet {
             if model != nil {
-                setupSubviews()
+                setupSubviewsIfNeeded()
                 representedAssetIdentifier = XZImageManager.manager.getAssetIdentifier(self.model!.asset)
                 let imageRequestID: PHImageRequestID = XZImageManager.manager.getPhotoWithAsset(self.model!.asset, photoWidth: CGFloat(PhotoCollectionCell_PhotoWidth), completion: { (img) in
                     
+                    weak var weakSelf = self
                     if self.representedAssetIdentifier! == XZImageManager.manager.getAssetIdentifier(self.model!.asset) {
-                        weak var weakSelf = self
                         weakSelf!.photoImageView?.image = img
                     } else {
                         print("*******-------this cell is showing other asset-------*******")
@@ -61,7 +61,7 @@ class XZPhotoCollectionCell: UICollectionViewCell {
 
 // MARK: Setup
 private extension XZPhotoCollectionCell {
-    func setupSubviews() {
+    func setupSubviewsIfNeeded() {
         func setupPhotoImageView() {
             photoImageView = UIImageView()
             contentView.addSubview(photoImageView!)
@@ -142,8 +142,7 @@ extension XZPhotoCollectionCell {
     func checkmarkButtonClicked(sender: UIButton) {
         if sender === checkmarkButton {
             sender.selected = !sender.selected
-            self.didSelectPhotoClosure(sender.selected)
-//            model?.selected = sender.selected
+            self.didSelectPhotoClosure(sender.selected) // callback to VC
             setupCheckmarkStatus()
         }
     }

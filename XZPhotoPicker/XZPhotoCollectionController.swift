@@ -187,20 +187,31 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PhotoCollectionCell_Identifier, forIndexPath: indexPath) as! XZPhotoCollectionCell
         let currentAsset: PHAsset = model.result[indexPath.row] as! PHAsset
-        cell.model = XZAssetModel(asset: currentAsset)
+        let currentModel = XZAssetModel(asset: currentAsset)
+        for model in SelectedAssets {
+            if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(currentModel.asset) {
+                currentModel.selected = true
+            }
+        }
+        cell.model = currentModel
+
+        weak var weakCell = cell
         cell.didSelectPhotoClosure = { (selected: Bool) -> () in
 //            print("model is selected: \(selected)")
+            weakCell?.model!.selected = selected
+//            print("weakCell.model is selected: \(weakCell.model!.selected)")
             if !selected {
-                for model in selectedAssets {
-                    if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(cell.model!.asset) {
-                        let indexOfObject = selectedAssets.indexOf(model)
-                        selectedAssets.removeAtIndex(indexOfObject!)
+                for model in SelectedAssets {
+                    if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(weakCell!.model!.asset) {
+                        let indexOfObject = SelectedAssets.indexOf(model)
+//                        print("*****model is selected: \(model.selected)")
+                        SelectedAssets.removeAtIndex(indexOfObject!)
                     }
                 }
             } else if selected {
-                selectedAssets.append(cell.model!)
+                SelectedAssets.append(weakCell!.model!)
             }
-            print("count of selectedAssets: \(selectedAssets.count)")
+//            print("count of selectedAssets: \(selectedAssets.count)")
         }
         return cell
     }

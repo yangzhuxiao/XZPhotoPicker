@@ -23,8 +23,8 @@ class XZAlbumListCell: UITableViewCell {
                 titleLabel.attributedText = albumName
             }
             
+            weak var weakSelf = self
             XZImageManager.manager.getAlbumListCellCoverImageWithAlbumModel(model!, phWidth: AlbumListRowHeight) { (coverImage) in
-                weak var weakSelf = self
                 weakSelf!.coverImageView.image = coverImage
             }
         }

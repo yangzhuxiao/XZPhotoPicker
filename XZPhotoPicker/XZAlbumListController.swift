@@ -71,8 +71,8 @@ private extension XZAlbumListController {
 // MARK: Load data
 private extension XZAlbumListController {
     func loadData() {
+        weak var weakSelf = self
         XZImageManager.manager.getAllAlbums { (models: Array<XZAlbumModel>) in
-            weak var weakSelf = self
             weakSelf?.albums = NSMutableArray(array: models)
             weakSelf?.tableView.reloadData()
         }

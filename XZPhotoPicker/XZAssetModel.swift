@@ -11,7 +11,7 @@ import Photos
 
 class XZAssetModel: NSObject {
     let asset: PHAsset
-    let selected: Bool
+    var selected: Bool
     
     init(asset: PHAsset) {
         self.asset = asset
