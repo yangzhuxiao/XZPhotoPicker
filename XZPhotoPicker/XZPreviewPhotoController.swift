@@ -90,11 +90,11 @@ private extension XZPreviewPhotoController {
             view.bottom == view.superview!.bottom
             view.height == PhotoPreview_BottomToolBarHeight
         }
-        constrain(collectionView!, toolBarView) { (view1, view2) in
+        constrain(collectionView!) { (view1) in
             view1.top == view1.superview!.top
             view1.left == view1.superview!.left
             view1.right == view1.superview!.right
-            view1.bottom == view2.top
+            view1.bottom == view1.superview!.bottom
         }
     }
 }
@@ -102,7 +102,7 @@ private extension XZPreviewPhotoController {
 // MARK: Style
 private extension XZPreviewPhotoController {
     func style() {
-        
+        collectionView?.pagingEnabled = true
     }
 }
 
@@ -119,6 +119,12 @@ extension XZPreviewPhotoController: UICollectionViewDataSource {
         cell.model = models[indexPath.row]
         return cell
     }
+//    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+//        (cell as! XZPreviewPhotoCell).recoverSubviews()
+//    }
+//    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
+//        (cell as! XZPreviewPhotoCell).recoverSubviews()
+//    }
 }
 
 

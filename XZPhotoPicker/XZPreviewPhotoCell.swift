@@ -19,9 +19,11 @@ class XZPreviewPhotoCell: UICollectionViewCell {
         didSet {
             if model != nil {
                 setupSubviewsIfNeeded()
+                scrollContainerView?.setZoomScale(1.0, animated: false)
                 weak var weakSelf = self
-                XZImageManager.manager.getPhotoWithAsset(self.model!.asset, photoWidth: ScreenWidth) { (img) in
+                XZImageManager.manager.getPhotoWithAsset(self.model!.asset) { (img) in
                     weakSelf!.photoImageView!.image = img
+                    weakSelf!.resizeSubviews()
                 }
             }
         }
@@ -41,6 +43,7 @@ private extension XZPreviewPhotoCell {
     func setupSubviewsIfNeeded() {
         func setupScrollContainerView() {
             scrollContainerView = UIScrollView()
+            scrollContainerView?.delegate = self
             contentView.addSubview(scrollContainerView!)
         }
         func setupPhotoImageView() {
@@ -87,9 +90,58 @@ private extension XZPreviewPhotoCell {
         scrollContainerView!.bouncesZoom = true
         scrollContainerView!.maximumZoomScale = PhotoPreview_MaximumZoomScale
         scrollContainerView!.minimumZoomScale = PhotoPreview_MinumumZoomScale
+        
+        scrollContainerView?.showsVerticalScrollIndicator = false
+        scrollContainerView?.showsHorizontalScrollIndicator = true
     }
 }
 
+// MARK: Resize subviews
+extension XZPreviewPhotoCell {
+    func recoverSubviews() {
+        scrollContainerView?.setZoomScale(1.0, animated: false)
+        resizeSubviews()
+    }
+    
+    private func resizeSubviews() {
+        photoImageView?.frame.origin = CGPointZero
+        
+        let photo = photoImageView!.image!
+        var imgNewHeight: CGFloat?
+        var imgCenterY: CGFloat = 0
+        // aspect ratio was too high
+        if photo.size.height/photo.size.width > ScreenHeight / ScreenWidth {
+            imgNewHeight = floor(photo.size.height / (photo.size.width / ScreenWidth))
+        } else {
+            imgNewHeight = floor(photo.size.height / photo.size.width * ScreenWidth)
+            if imgNewHeight!.isNaN || imgNewHeight < scrollContainerView!.frame.size.height {
+                imgNewHeight = ScreenHeight
+            }
+            imgCenterY = ScreenHeight / 2
+        }
+        
+        photoImageView?.frame = CGRect(origin: CGPointZero, size: CGSize(width: scrollContainerView!.frame.width, height: imgNewHeight!))
+        if imgCenterY != 0 {
+            photoImageView?.center.y = imgCenterY
+        }
+            
+        scrollContainerView?.contentSize = CGSize(width: ScreenWidth, height: max(ScreenHeight, imgNewHeight!))
+        scrollContainerView?.scrollRectToVisible(scrollContainerView!.bounds, animated: false)
+        scrollContainerView?.alwaysBounceVertical = imgNewHeight! <= ScreenHeight ? false : true
+    }
+}
+
+// MARK: 
+extension XZPreviewPhotoCell: UIScrollViewDelegate {
+    func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
+        return photoImageView
+    }
+    func scrollViewDidZoom(scrollView: UIScrollView) {
+        let offsetX: CGFloat = (scrollView.frame.size.width > scrollView.contentSize.width) ? (scrollView.frame.size.width - scrollView.contentSize.width) * 0.5 : 0
+        let offsetY: CGFloat = (scrollView.frame.size.height > scrollView.contentSize.height) ? (scrollView.frame.size.height - scrollView.contentSize.height) * 0.5 : 0
+        photoImageView?.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY)
+    }
+}
 
 
 

@@ -100,6 +100,15 @@ extension XZImageManager {
             completion(coverImage: coverImg)
         }
     }
+    
+    func getPhotoWithAsset(asset: PHAsset, completion: (img: UIImage) -> ()) {
+        var maxPhotoWidth = ScreenWidth > PhotoPreview_MaxWidth ? PhotoPreview_MaxWidth : ScreenWidth
+        maxPhotoWidth = maxPhotoWidth / ImageScaleFactor
+        getPhotoWithAsset(asset, photoWidth: maxPhotoWidth) { (img) in
+            completion(img: img)
+        }
+    }
+    
     func getPhotoWithAsset(asset: PHAsset, photoWidth: CGFloat, completion: (img: UIImage) -> ()) -> PHImageRequestID {
         let imgPixelWidth: CGFloat = photoWidth * ImageScaleFactor
         let imgAspectRatio = CGFloat(asset.pixelWidth)/CGFloat(asset.pixelHeight)
