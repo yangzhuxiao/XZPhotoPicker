@@ -18,6 +18,8 @@ class XZPhotoCollectionCell: UICollectionViewCell {
     
     var representedAssetIdentifier: String?
     var imageRequestID: PHImageRequestID = 0
+    var didSelectPhotoClosure = { (selected: Bool) -> Void in
+    }
     
     var model: XZAssetModel? {
         didSet {
@@ -140,6 +142,7 @@ extension XZPhotoCollectionCell {
     func checkmarkButtonClicked(sender: UIButton) {
         if sender === checkmarkButton {
             sender.selected = !sender.selected
+            self.didSelectPhotoClosure(sender.selected)
 //            model?.selected = sender.selected
             setupCheckmarkStatus()
         }

@@ -172,6 +172,9 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PhotoCollectionCell_Identifier, forIndexPath: indexPath) as! XZPhotoCollectionCell
         let currentAsset: PHAsset = model.result[indexPath.row] as! PHAsset
         cell.model = XZAssetModel(asset: currentAsset)
+        cell.didSelectPhotoClosure = { (selected: Bool) -> () in
+            print("model is selected...")
+        }
         return cell
     }
 }
