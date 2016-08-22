@@ -47,35 +47,36 @@ class XZPhotoCollectionController: UIViewController {
 private extension XZPhotoCollectionController {
     func setup() {
         title = model.name
+        
+        func setupCollectionView() {
+            func collectionViewFlowLayout() -> UICollectionViewFlowLayout {
+                let flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+                flowLayout.itemSize = CGSize(width: CGFloat(PhotoCollectionCell_PhotoWidth),
+                                             height: CGFloat(PhotoCollectionCell_PhotoWidth))
+                flowLayout.minimumInteritemSpacing = PhotoCollectionCell_XMargin
+                flowLayout.minimumLineSpacing = PhotoCollectionCell_XMargin
+                return flowLayout
+            }
+            
+            if collectionView == nil {
+                collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout())
+                collectionView!.dataSource = self
+                collectionView!.delegate = self
+                collectionView!.registerClass(XZPhotoCollectionCell.self, forCellWithReuseIdentifier: PhotoCollectionCell_Identifier)
+                view.addSubview(collectionView!)
+            }
+        }
+        func setupBottomToolBar() {
+            view.addSubview(toolBarView)
+            
+            toolBarView.addSubview(previewButton)
+            toolBarView.addSubview(circleOfNumberImageView)
+            toolBarView.addSubview(numberOfSelectedLabel)
+            toolBarView.addSubview(okButton)
+        }
+        
         setupCollectionView()
         setupBottomToolBar()
-    }
-    
-    func setupCollectionView() {
-        func collectionViewFlowLayout() -> UICollectionViewFlowLayout {
-            let flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-            flowLayout.itemSize = CGSize(width: CGFloat(PhotoCollectionCell_PhotoWidth),
-                                         height: CGFloat(PhotoCollectionCell_PhotoWidth))
-            flowLayout.minimumInteritemSpacing = PhotoCollectionCell_XMargin
-            flowLayout.minimumLineSpacing = PhotoCollectionCell_XMargin
-            return flowLayout
-        }
-        
-        if collectionView == nil {
-            collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout())
-            collectionView!.dataSource = self
-            collectionView!.registerClass(XZPhotoCollectionCell.self, forCellWithReuseIdentifier: PhotoCollectionCell_Identifier)
-            view.addSubview(collectionView!)
-        }
-    }
-    
-    func setupBottomToolBar() {
-        view.addSubview(toolBarView)
-        
-        toolBarView.addSubview(previewButton)
-        toolBarView.addSubview(circleOfNumberImageView)
-        toolBarView.addSubview(numberOfSelectedLabel)
-        toolBarView.addSubview(okButton)
     }
 }
 
@@ -249,7 +250,10 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
 
 // MARK: UICollectionViewDelegate
 extension XZPhotoCollectionController: UICollectionViewDelegate {
-    
+    func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        let previewVC = XZPreviewPhotoController(currentIndex: indexPath.row, models: model.models)
+        self.navigationController?.pushViewController(previewVC, animated: true)
+    }
 }
 
 

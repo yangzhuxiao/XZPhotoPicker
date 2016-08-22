@@ -119,6 +119,17 @@ extension XZImageManager {
     func getAssetIdentifier(asset: PHAsset) -> String {
         return asset.localIdentifier
     }
+    
+    func getAssetsFromFetchResult(result: PHFetchResult, completion: (Array<XZAssetModel>) -> ()) {
+        var assetsArray: Array<XZAssetModel> = []
+        result.enumerateObjectsUsingBlock { (obj, idx, stop) in
+            if obj.isKindOfClass(PHAsset.self) {
+                let model = XZAssetModel(asset: obj as! PHAsset)
+                assetsArray.append(model)
+            }
+        }
+        completion(assetsArray)
+    }
 }
 
 private extension XZImageManager {

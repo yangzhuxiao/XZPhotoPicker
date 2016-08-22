@@ -14,11 +14,17 @@ class XZAlbumModel: NSObject {
     var count: Int
     var result: PHFetchResult // PHFetchResult<PHAsset>
     
+    var models: Array<XZAssetModel> = []
+    
     init(result: PHFetchResult, name: String, count: Int) {
         self.name = name
         self.result = result
         self.count = result.count
         super.init()
+
+        XZImageManager.manager.getAssetsFromFetchResult(result) { (array) in
+            self.models = array
+        }
     }
 }
 

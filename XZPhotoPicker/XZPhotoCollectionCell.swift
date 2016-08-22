@@ -26,9 +26,9 @@ class XZPhotoCollectionCell: UICollectionViewCell {
             if model != nil {
                 setupSubviewsIfNeeded()
                 representedAssetIdentifier = XZImageManager.manager.getAssetIdentifier(self.model!.asset)
+                
+                weak var weakSelf = self
                 let imageRequestID: PHImageRequestID = XZImageManager.manager.getPhotoWithAsset(self.model!.asset, photoWidth: CGFloat(PhotoCollectionCell_PhotoWidth), completion: { (img) in
-                    
-                    weak var weakSelf = self
                     if self.representedAssetIdentifier! == XZImageManager.manager.getAssetIdentifier(self.model!.asset) {
                         weakSelf!.photoImageView?.image = img
                     } else {
