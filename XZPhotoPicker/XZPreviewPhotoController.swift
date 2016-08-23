@@ -246,6 +246,7 @@ extension XZPreviewPhotoController {
     }
     func checkmarkButtonPressed(sender: UIButton) {
         checkmarkButton.selected = !checkmarkButton.selected
+        
     }
     func okButtonPressed(sender: UIButton) {
         

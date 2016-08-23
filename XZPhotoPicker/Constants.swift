@@ -23,6 +23,20 @@ var assetIsSelected = {(asset: PHAsset) -> (Bool) in
     return false
 }
 
+var removeAsset = {(asset: PHAsset) -> (Bool) in
+    for model in SelectedAssets {
+        if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(asset) {
+            let indexOfObject = SelectedAssets.indexOf(model)
+//            print("*****model is selected: \(model.selected)")
+            if indexOfObject >= 0 && indexOfObject <= SelectedAssets.count - 1 {
+                SelectedAssets.removeAtIndex(indexOfObject!)
+                return true
+            }
+        }
+    }
+    return false
+}
+
 let MaxPhotosCount: Int = 9
 
 // MARK:

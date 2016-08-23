@@ -228,13 +228,18 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
             weakCell?.model!.selected = selected
 //            print("weakCell.model is selected: \(weakCell.model!.selected)")
             if !selected {
-                for model in SelectedAssets {
-                    if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(weakCell!.model!.asset) {
-                        let indexOfObject = SelectedAssets.indexOf(model)
-//                        print("*****model is selected: \(model.selected)")
-                        SelectedAssets.removeAtIndex(indexOfObject!)
-                    }
+                
+                let success: Bool = removeAsset(weakCell!.model!.asset)
+                if !success {
+                    print("remove selected asset failed...")
                 }
+//                for model in SelectedAssets {
+//                    if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(weakCell!.model!.asset) {
+//                        let indexOfObject = SelectedAssets.indexOf(model)
+////                        print("*****model is selected: \(model.selected)")
+//                        SelectedAssets.removeAtIndex(indexOfObject!)
+//                    }
+//                }
             } else if selected {
                 SelectedAssets.append(weakCell!.model!)
             }
