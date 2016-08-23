@@ -247,6 +247,17 @@ extension XZPreviewPhotoController {
     func checkmarkButtonPressed(sender: UIButton) {
         checkmarkButton.selected = !checkmarkButton.selected
         
+        let currentModel: XZAssetModel = models[currentIndex]
+        currentModel.selected = checkmarkButton.selected
+        if currentModel.selected {
+            SelectedAssets.append(currentModel)
+            refreshNavAndToolBarDataStatus()
+        } else {
+            weak var weakSelf = self
+            removeAsset(currentModel.asset, { (success) in
+                weakSelf!.refreshNavAndToolBarDataStatus()
+            })
+        }
     }
     func okButtonPressed(sender: UIButton) {
         

@@ -23,18 +23,25 @@ var assetIsSelected = {(asset: PHAsset) -> (Bool) in
     return false
 }
 
-var removeAsset = {(asset: PHAsset) -> (Bool) in
+var removeAsset = {(asset: PHAsset, completion: (success: Bool) -> ()) -> () in
+    var success: Bool = false
     for model in SelectedAssets {
         if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(asset) {
             let indexOfObject = SelectedAssets.indexOf(model)
 //            print("*****model is selected: \(model.selected)")
             if indexOfObject >= 0 && indexOfObject <= SelectedAssets.count - 1 {
+                model.selected = false
                 SelectedAssets.removeAtIndex(indexOfObject!)
-                return true
+                success = true
+                completion(success: success)
             }
         }
     }
-    return false
+
+    if !success {
+        let alert = UIAlertView(title: nil, message: "remove selected asset failed...", delegate: nil, cancelButtonTitle: "OK")
+        alert.show()
+    }
 }
 
 let MaxPhotosCount: Int = 9
