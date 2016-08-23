@@ -43,6 +43,16 @@ class XZPreviewPhotoController: UIViewController {
         layoutView()
         style()
     }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        self.navigationController?.navigationBarHidden = true
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.navigationController?.navigationBarHidden = false
+    }
 }
 
 // MARK: Setup
@@ -60,6 +70,7 @@ private extension XZPreviewPhotoController {
             if collectionView == nil {
                 collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout())
                 collectionView?.registerClass(XZPreviewPhotoCell.self, forCellWithReuseIdentifier: PhotoPreviewCell_Identifier)
+                collectionView?.contentSize = CGSize(width: CGFloat(models.count) * ScreenWidth, height: 0)
                 collectionView?.dataSource = self
                 view.addSubview(collectionView!)
             }
@@ -117,6 +128,13 @@ extension XZPreviewPhotoController: UICollectionViewDataSource {
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PhotoPreviewCell_Identifier, forIndexPath: indexPath) as! XZPreviewPhotoCell
         cell.model = models[indexPath.row]
+        
+        cell.singleTapGestureBlock = {() -> () in
+            // TBD... show/hide toolbar and navBar
+            
+            
+            
+        }
         return cell
     }
 //    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {

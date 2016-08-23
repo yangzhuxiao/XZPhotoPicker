@@ -14,6 +14,8 @@ import Cartography
 class XZPreviewPhotoCell: UICollectionViewCell {
     private var scrollContainerView: UIScrollView?
     private var photoImageView: UIImageView?
+    var singleTapGestureBlock = {() -> () in
+    }
     
     var model: XZAssetModel? {
         didSet {
@@ -30,6 +32,7 @@ class XZPreviewPhotoCell: UICollectionViewCell {
     }
     
     override init(frame: CGRect) {
+        
         super.init(frame: frame)
     }
     
@@ -61,6 +64,17 @@ private extension XZPreviewPhotoCell {
             setupPhotoImageView()
             layoutPhotoImageView()
         }
+        
+        let singleTapping = UITapGestureRecognizer(target: self, action: #selector(XZPreviewPhotoCell.singleTap(_:)))
+        self.addGestureRecognizer(singleTapping)
+        
+        let doubleTapping = UITapGestureRecognizer(target: self, action: #selector(XZPreviewPhotoCell.doubleTap(_:)))
+        doubleTapping.numberOfTapsRequired = 2
+        self.addGestureRecognizer(doubleTapping)
+        
+        singleTapping.requireGestureRecognizerToFail(doubleTapping)
+        
+        //        singleTapping.addTarget(self, action: #selector(XZPreviewPhotoCell.singleTap(_:)))
     }
 }
 
@@ -131,7 +145,7 @@ extension XZPreviewPhotoCell {
     }
 }
 
-// MARK: 
+// MARK: UIScrollViewDelegate
 extension XZPreviewPhotoCell: UIScrollViewDelegate {
     func viewForZoomingInScrollView(scrollView: UIScrollView) -> UIView? {
         return photoImageView
@@ -140,6 +154,24 @@ extension XZPreviewPhotoCell: UIScrollViewDelegate {
         let offsetX: CGFloat = (scrollView.frame.size.width > scrollView.contentSize.width) ? (scrollView.frame.size.width - scrollView.contentSize.width) * 0.5 : 0
         let offsetY: CGFloat = (scrollView.frame.size.height > scrollView.contentSize.height) ? (scrollView.frame.size.height - scrollView.contentSize.height) * 0.5 : 0
         photoImageView?.center = CGPointMake(scrollView.contentSize.width * 0.5 + offsetX, scrollView.contentSize.height * 0.5 + offsetY)
+    }
+}
+
+// MARK: UITapGestureRecognizer Event
+extension XZPreviewPhotoCell {
+    func singleTap(tap: UITapGestureRecognizer) {
+        singleTapGestureBlock()
+    }
+    func doubleTap(tap: UITapGestureRecognizer) {
+        if scrollContainerView?.zoomScale > 1.0 {
+            scrollContainerView?.setZoomScale(1.0, animated: true)
+        } else {
+            let touchPoint = tap.locationInView(photoImageView)
+            let newZoomScale = PhotoPreview_MaximumZoomScale
+            let xSize = ScreenWidth / newZoomScale
+            let ySize = ScreenHeight / newZoomScale
+            scrollContainerView?.zoomToRect(CGRect(x: touchPoint.x - xSize/2, y: touchPoint.y - ySize/2, width: xSize, height: ySize), animated: true)
+        }
     }
 }
 
