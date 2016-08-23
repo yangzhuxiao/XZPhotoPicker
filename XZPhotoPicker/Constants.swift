@@ -10,12 +10,12 @@ import Foundation
 import UIKit
 import Photos
 
-// MARK: Global variables
+// MARK: Global Variables
 var ImageScaleFactor: CGFloat = 0
-var SelectedAssets: Array<XZAssetModel> = []
 let MaxPhotosCount: Int = 9
 
-
+// MARK: Selected Assets
+var SelectedAssets: Array<XZAssetModel> = []
 var addAssetModelToSelected = {(model: XZAssetModel, fail: (fail: Bool) -> Void, success: (success: Bool) -> Void) -> () in
     if SelectedAssets.count >= MaxPhotosCount {
         let alert = UIAlertView(title: nil, message: "最多可以选\(MaxPhotosCount)张", delegate: nil, cancelButtonTitle: "OK")
@@ -74,7 +74,7 @@ let AlbumListCell_Identifier: String = "AlbumListCell"
 
 // MARK: Photo Collection View
 let PhotoCollectionCell_NumOfPhotosInARow: Int = 4
-let PhotoCollectionCell_ClickableAreaRatio: CGFloat = 0.4
+let PhotoCollectionCell_ClickableAreaRatio: CGFloat = 0.45
 let PhotoCollectionCell_CheckMarkImageSize: CGSize = CGSize(width: 27, height: 27) // 选择对号大小
 let PhotoCollectionCell_CheckMarkImageMargin: CGFloat = 2 // 选择对号上、右边距
 

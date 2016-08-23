@@ -18,11 +18,13 @@ class XZPhotoCollectionController: UIViewController {
     private let numberOfSelectedLabel = UILabel()
     private let circleOfNumberImageView = UIView()
     private let toolBarView = UIView()
+    private var shouldScrollToBottom: Bool
     
     var model: XZAlbumModel
     
     required init(model: XZAlbumModel) {
         self.model = model
+        self.shouldScrollToBottom = true
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -41,6 +43,13 @@ class XZPhotoCollectionController: UIViewController {
         super.viewWillAppear(animated)
         refreshBottomToolBarStatus()
         collectionView?.reloadData()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        if shouldScrollToBottom {
+            collectionView?.scrollToItemAtIndexPath(NSIndexPath(forItem: model.count - 1, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.Bottom, animated: false)
+            shouldScrollToBottom = false
+        }
     }
     
     deinit {
@@ -64,7 +73,7 @@ private extension XZPhotoCollectionController {
             }
             
             if collectionView == nil {
-                collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout())
+                collectionView = UICollectionView(frame: CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: ScreenWidth, height: ScreenHeight)), collectionViewLayout: collectionViewFlowLayout())
                 collectionView!.dataSource = self
                 collectionView!.delegate = self
                 collectionView!.registerClass(XZPhotoCollectionCell.self, forCellWithReuseIdentifier: PhotoCollectionCell_Identifier)
