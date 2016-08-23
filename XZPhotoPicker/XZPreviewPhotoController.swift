@@ -252,8 +252,11 @@ extension XZPreviewPhotoController {
         
         weak var weakSelf = self
         if currentModel.selected {
-            addAssetModelToSelected(currentModel, { (success) in
-                weakSelf!.refreshNavAndToolBarDataStatus()
+            addAssetModelToSelected(currentModel, { (fail) in
+                weakSelf!.checkmarkButton.selected = false
+                currentModel.selected = false
+                }, { (success) in
+                    weakSelf!.refreshNavAndToolBarDataStatus()
             })
         } else {
             removeAsset(currentModel.asset, { (success) in

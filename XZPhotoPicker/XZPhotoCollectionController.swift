@@ -42,6 +42,10 @@ class XZPhotoCollectionController: UIViewController {
         refreshBottomToolBarStatus()
         collectionView?.reloadData()
     }
+    
+    deinit {
+        emptySelectedAssets()
+    }
 }
 
 // MARK: Setup
@@ -224,19 +228,23 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
 
         weak var weakCell = cell
         weak var weakSelf = self
-        cell.didSelectPhotoClosure = { (selected: Bool) -> () in
+        
+        cell.didSelectPhotoClosure = { (selected: Bool, sender: UIButton) -> () in
             weakCell?.model!.selected = selected
             if !selected {
                 removeAsset(weakCell!.model!.asset, { (success) in
                     // do nothing here
                 })
             } else if selected {
-                addAssetModelToSelected(weakCell!.model!, { (success) in
-                    // do nothing here
+                addAssetModelToSelected(weakCell!.model!, { (fail) in
+                    sender.selected = false
+                    }, { (success) in
+                        // do nothing here
                 })
             }
             weakSelf!.refreshBottomToolBarStatus()
         }
+        
         return cell
     }
 }

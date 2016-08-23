@@ -16,13 +16,14 @@ var SelectedAssets: Array<XZAssetModel> = []
 let MaxPhotosCount: Int = 9
 
 
-var addAssetModelToSelected = {(model: XZAssetModel, completion: (success: Bool) -> ()) -> () in
+var addAssetModelToSelected = {(model: XZAssetModel, fail: (fail: Bool) -> Void, success: (success: Bool) -> Void) -> () in
     if SelectedAssets.count >= MaxPhotosCount {
         let alert = UIAlertView(title: nil, message: "最多可以选\(MaxPhotosCount)张", delegate: nil, cancelButtonTitle: "OK")
         alert.show()
+        fail(fail: true)
     } else {
         SelectedAssets.append(model)
-        completion(success: true)
+        success(success: true)
     }
 }
 var assetIsSelected = {(asset: PHAsset) -> (Bool) in
@@ -33,7 +34,6 @@ var assetIsSelected = {(asset: PHAsset) -> (Bool) in
     }
     return false
 }
-
 var removeAsset = {(asset: PHAsset, completion: (success: Bool) -> ()) -> () in
     var success: Bool = false
     for model in SelectedAssets {
@@ -48,11 +48,13 @@ var removeAsset = {(asset: PHAsset, completion: (success: Bool) -> ()) -> () in
             }
         }
     }
-
     if !success {
         let alert = UIAlertView(title: nil, message: "remove selected asset failed...", delegate: nil, cancelButtonTitle: "OK")
         alert.show()
     }
+}
+var emptySelectedAssets = {() -> () in
+    SelectedAssets.removeAll()
 }
 
 // MARK:
