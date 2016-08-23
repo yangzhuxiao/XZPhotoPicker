@@ -8,10 +8,21 @@
 
 import Foundation
 import UIKit
+import Photos
 
 // MARK: Global variables
 var ImageScaleFactor: CGFloat = 0
 var SelectedAssets: Array<XZAssetModel> = []
+
+var assetIsSelected = {(asset: PHAsset) -> (Bool) in
+    for model in SelectedAssets {
+        if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(asset) {
+            return true
+        }
+    }
+    return false
+}
+
 let MaxPhotosCount: Int = 9
 
 // MARK:

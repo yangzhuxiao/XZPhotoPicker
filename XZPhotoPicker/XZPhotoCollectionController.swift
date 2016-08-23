@@ -217,11 +217,8 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PhotoCollectionCell_Identifier, forIndexPath: indexPath) as! XZPhotoCollectionCell
         let currentAsset: PHAsset = model.result[indexPath.row] as! PHAsset
         let currentModel = XZAssetModel(asset: currentAsset)
-        for model in SelectedAssets {
-            if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(currentModel.asset) {
-                currentModel.selected = true
-            }
-        }
+        
+        currentModel.selected = assetIsSelected(currentAsset)
         cell.model = currentModel
 
         weak var weakCell = cell

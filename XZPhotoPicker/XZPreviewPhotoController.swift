@@ -47,9 +47,8 @@ class XZPreviewPhotoController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBarHidden = true
-        
         collectionView?.setContentOffset(CGPointMake(ScreenWidth * CGFloat(currentIndex), 0), animated: false)
-        
+        refreshNavAndToolBarDataStatus()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -79,6 +78,7 @@ private extension XZPreviewPhotoController {
                 collectionView?.registerClass(XZPreviewPhotoCell.self, forCellWithReuseIdentifier: PhotoPreviewCell_Identifier)
                 collectionView?.contentSize = CGSize(width: CGFloat(models.count) * ScreenWidth, height: 0)
                 collectionView?.dataSource = self
+                collectionView?.delegate = self
                 view.addSubview(collectionView!)
             }
         }
@@ -213,13 +213,28 @@ private extension XZPreviewPhotoController {
         styleNavBarView()
     }
     
-    func toggleNavAndToolBarStatus() {
+    func toggleNavAndToolBarDisplayStatus() {
         if navBarView.hidden == true && toolBarView.hidden == true {
             navBarView.hidden = false
             toolBarView.hidden = false
         } else {
             navBarView.hidden = true
             toolBarView.hidden = true
+        }
+    }
+
+    func refreshNavAndToolBarDataStatus() {
+        let currentModel: XZAssetModel = models[currentIndex]
+        
+        currentModel.selected = assetIsSelected(currentModel.asset)
+        checkmarkButton.selected = currentModel.selected
+        
+        circleOfNumberImageView.hidden = SelectedAssets.count <= 0 ? true : false
+        if circleOfNumberImageView.hidden == false {
+            numberOfSelectedLabel.text = String(SelectedAssets.count)
+            numberOfSelectedLabel.hidden = false
+        } else {
+            numberOfSelectedLabel.hidden = true
         }
     }
 }
@@ -252,7 +267,7 @@ extension XZPreviewPhotoController: UICollectionViewDataSource {
         weak var weakSelf = self
         cell.singleTapGestureBlock = {() -> () in
             // TBD... show/hide toolbar and navBar
-            weakSelf!.toggleNavAndToolBarStatus()
+            weakSelf!.toggleNavAndToolBarDisplayStatus()
         }
         return cell
     }
@@ -262,6 +277,19 @@ extension XZPreviewPhotoController: UICollectionViewDataSource {
 //    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
 //        (cell as! XZPreviewPhotoCell).recoverSubviews()
 //    }
+}
+
+// MARK: UIScrollViewDelegate
+extension XZPreviewPhotoController: UICollectionViewDelegate {
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        let offsetX = scrollView.contentOffset.x
+        let theIndex = Int(offsetX / ScreenWidth)
+        
+        if theIndex != currentIndex {
+            currentIndex = theIndex
+            refreshNavAndToolBarDataStatus()
+        }
+    }
 }
 
 
