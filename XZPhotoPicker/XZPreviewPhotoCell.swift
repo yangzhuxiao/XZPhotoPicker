@@ -32,7 +32,6 @@ class XZPreviewPhotoCell: UICollectionViewCell {
     }
     
     override init(frame: CGRect) {
-        
         super.init(frame: frame)
     }
     
@@ -62,7 +61,7 @@ private extension XZPreviewPhotoCell {
         
         if photoImageView == nil {
             setupPhotoImageView()
-            layoutPhotoImageView()
+//            layoutPhotoImageView()
         }
         
         let singleTapping = UITapGestureRecognizer(target: self, action: #selector(XZPreviewPhotoCell.singleTap(_:)))
@@ -88,14 +87,14 @@ private extension XZPreviewPhotoCell {
             view.bottom == view.superview!.bottom
         }
     }
-    func layoutPhotoImageView() {
-        constrain(photoImageView!) { (view) in
-            view.left == view.superview!.left
-            view.right == view.superview!.right
-            view.top == view.superview!.top
-            view.bottom == view.superview!.bottom
-        }
-    }
+//    func layoutPhotoImageView() {
+//        constrain(photoImageView!) { (view) in
+//            view.left == view.superview!.left
+//            view.right == view.superview!.right
+//            view.top == view.superview!.top
+//            view.bottom == view.superview!.bottom
+//        }
+//    }
 }
 
 // MARK: Style
@@ -128,9 +127,9 @@ extension XZPreviewPhotoCell {
             imgNewHeight = floor(photo.size.height / (photo.size.width / ScreenWidth))
         } else {
             imgNewHeight = floor(photo.size.height / photo.size.width * ScreenWidth)
-            if imgNewHeight!.isNaN || imgNewHeight < scrollContainerView!.frame.size.height {
-                imgNewHeight = ScreenHeight
-            }
+//            if imgNewHeight!.isNaN || imgNewHeight < scrollContainerView!.frame.size.height {
+//                imgNewHeight = ScreenHeight
+//            }
             imgCenterY = ScreenHeight / 2
         }
         

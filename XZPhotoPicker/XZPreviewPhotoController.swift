@@ -53,6 +53,10 @@ class XZPreviewPhotoController: UIViewController {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBarHidden = false
     }
+    
+    override func prefersStatusBarHidden() -> Bool {
+        return true
+    }
 }
 
 // MARK: Setup
@@ -70,7 +74,7 @@ private extension XZPreviewPhotoController {
             if collectionView == nil {
                 collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout())
                 collectionView?.registerClass(XZPreviewPhotoCell.self, forCellWithReuseIdentifier: PhotoPreviewCell_Identifier)
-                collectionView?.contentSize = CGSize(width: CGFloat(models.count) * ScreenWidth, height: 0)
+//                collectionView?.contentSize = CGSize(width: CGFloat(models.count) * ScreenWidth, height: 0)
                 collectionView?.dataSource = self
                 view.addSubview(collectionView!)
             }
