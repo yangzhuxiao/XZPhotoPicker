@@ -14,7 +14,7 @@ import Cartography
 class XZPreviewPhotoController: UIViewController {
     var models: Array<XZAssetModel>
     var photos: Array<PHAsset> = []
-    var currentIndex: Int
+    var currentIndex: Int = 0
     
     private var collectionView: UICollectionView?
     
@@ -47,6 +47,9 @@ class XZPreviewPhotoController: UIViewController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.navigationController?.navigationBarHidden = true
+        
+        collectionView?.setContentOffset(CGPointMake(ScreenWidth * CGFloat(currentIndex), 0), animated: false)
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -74,7 +77,7 @@ private extension XZPreviewPhotoController {
             if collectionView == nil {
                 collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout())
                 collectionView?.registerClass(XZPreviewPhotoCell.self, forCellWithReuseIdentifier: PhotoPreviewCell_Identifier)
-//                collectionView?.contentSize = CGSize(width: CGFloat(models.count) * ScreenWidth, height: 0)
+                collectionView?.contentSize = CGSize(width: CGFloat(models.count) * ScreenWidth, height: 0)
                 collectionView?.dataSource = self
                 view.addSubview(collectionView!)
             }
