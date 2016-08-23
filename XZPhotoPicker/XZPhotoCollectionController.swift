@@ -228,10 +228,12 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
             weakCell?.model!.selected = selected
             if !selected {
                 removeAsset(weakCell!.model!.asset, { (success) in
-                    // here do nothing
+                    // do nothing here
                 })
             } else if selected {
-                SelectedAssets.append(weakCell!.model!)
+                addAssetModelToSelected(weakCell!.model!, { (success) in
+                    // do nothing here
+                })
             }
             weakSelf!.refreshBottomToolBarStatus()
         }

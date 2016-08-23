@@ -13,7 +13,18 @@ import Photos
 // MARK: Global variables
 var ImageScaleFactor: CGFloat = 0
 var SelectedAssets: Array<XZAssetModel> = []
+let MaxPhotosCount: Int = 9
 
+
+var addAssetModelToSelected = {(model: XZAssetModel, completion: (success: Bool) -> ()) -> () in
+    if SelectedAssets.count >= MaxPhotosCount {
+        let alert = UIAlertView(title: nil, message: "最多可以选\(MaxPhotosCount)张", delegate: nil, cancelButtonTitle: "OK")
+        alert.show()
+    } else {
+        SelectedAssets.append(model)
+        completion(success: true)
+    }
+}
 var assetIsSelected = {(asset: PHAsset) -> (Bool) in
     for model in SelectedAssets {
         if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(asset) {
@@ -43,8 +54,6 @@ var removeAsset = {(asset: PHAsset, completion: (success: Bool) -> ()) -> () in
         alert.show()
     }
 }
-
-let MaxPhotosCount: Int = 9
 
 // MARK:
 let ScreenWidth: CGFloat = UIScreen.mainScreen().bounds.size.width

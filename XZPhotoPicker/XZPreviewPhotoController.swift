@@ -249,11 +249,13 @@ extension XZPreviewPhotoController {
         
         let currentModel: XZAssetModel = models[currentIndex]
         currentModel.selected = checkmarkButton.selected
+        
+        weak var weakSelf = self
         if currentModel.selected {
-            SelectedAssets.append(currentModel)
-            refreshNavAndToolBarDataStatus()
+            addAssetModelToSelected(currentModel, { (success) in
+                weakSelf!.refreshNavAndToolBarDataStatus()
+            })
         } else {
-            weak var weakSelf = self
             removeAsset(currentModel.asset, { (success) in
                 weakSelf!.refreshNavAndToolBarDataStatus()
             })
