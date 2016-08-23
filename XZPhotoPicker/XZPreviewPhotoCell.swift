@@ -33,6 +33,14 @@ class XZPreviewPhotoCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        let singleTapping = UITapGestureRecognizer(target: self, action: #selector(XZPreviewPhotoCell.singleTap(_:)))
+        self.addGestureRecognizer(singleTapping)
+        
+        let doubleTapping = UITapGestureRecognizer(target: self, action: #selector(XZPreviewPhotoCell.doubleTap(_:)))
+        doubleTapping.numberOfTapsRequired = 2
+        self.addGestureRecognizer(doubleTapping)
+        
+//        singleTapping.requireGestureRecognizerToFail(doubleTapping)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -63,17 +71,6 @@ private extension XZPreviewPhotoCell {
             setupPhotoImageView()
 //            layoutPhotoImageView()
         }
-        
-        let singleTapping = UITapGestureRecognizer(target: self, action: #selector(XZPreviewPhotoCell.singleTap(_:)))
-        self.addGestureRecognizer(singleTapping)
-        
-        let doubleTapping = UITapGestureRecognizer(target: self, action: #selector(XZPreviewPhotoCell.doubleTap(_:)))
-        doubleTapping.numberOfTapsRequired = 2
-        self.addGestureRecognizer(doubleTapping)
-        
-        singleTapping.requireGestureRecognizerToFail(doubleTapping)
-        
-        //        singleTapping.addTarget(self, action: #selector(XZPreviewPhotoCell.singleTap(_:)))
     }
 }
 

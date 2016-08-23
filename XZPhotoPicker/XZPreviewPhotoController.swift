@@ -84,35 +84,77 @@ private extension XZPreviewPhotoController {
         }
         
         func setupNavBarView() {
+            view.addSubview(navBarView)
+            navBarView.addSubview(backButton)
+            navBarView.addSubview(checkmarkButton)
             
+            backButton.addTarget(self, action: #selector(XZPreviewPhotoController.backButtonPressed(_:)), forControlEvents: .TouchUpInside)
+            checkmarkButton.addTarget(self, action: #selector(XZPreviewPhotoController.checkmarkButtonPressed(_:)), forControlEvents: .TouchUpInside)
         }
         
         func setupToolBarView() {
             view.addSubview(toolBarView)
+            toolBarView.addSubview(okButton)
+            toolBarView.addSubview(circleOfNumberImageView)
+            toolBarView.addSubview(numberOfSelectedLabel)
+            
+            okButton.addTarget(self, action: #selector(XZPreviewPhotoController.okButtonPressed(_:)), forControlEvents: .TouchUpInside)
         }
         
         setupCollectinView()
-        setupNavBarView()
         setupToolBarView()
+        setupNavBarView()
     }
-    
     
 }
 
 // MARK: Layout
 private extension XZPreviewPhotoController {
     func layoutView() {
+        constrain(collectionView!) { (view1) in
+            view1.top == view1.superview!.top
+            view1.left == view1.superview!.left
+            view1.right == view1.superview!.right
+            view1.bottom == view1.superview!.bottom
+        }
         constrain(toolBarView) { (view) in
             view.left == view.superview!.left
             view.right == view.superview!.right + 1
             view.bottom == view.superview!.bottom
             view.height == PhotoPreview_BottomToolBarHeight
         }
-        constrain(collectionView!) { (view1) in
+        constrain(okButton, numberOfSelectedLabel, circleOfNumberImageView) { (view1, view2, view3) in
+            view1.right == view1.superview!.right
+            view1.top == view1.superview!.top
+            view1.bottom == view1.superview!.bottom
+            view1.width == view1.height * 1.5
+            
+            view2.centerY == view2.superview!.centerY
+            view2.width == PhotoPreview_BottomToolBarNumberOfSelectedLabelHeight
+            view2.height == view2.width
+            view2.left == view1.left
+            
+            view3.top == view2.top
+            view3.bottom == view2.bottom
+            view3.left == view2.left
+            view3.right == view2.right
+        }
+        constrain(navBarView) { (view) in
+            view.top == view.superview!.top
+            view.left == view.superview!.left
+            view.right == view.superview!.right
+            view.height == PhotoPreview_NavBarHeight
+        }
+        constrain(backButton, checkmarkButton) { (view1, view2) in
             view1.top == view1.superview!.top
             view1.left == view1.superview!.left
-            view1.right == view1.superview!.right
             view1.bottom == view1.superview!.bottom
+            view1.width == view1.height
+            
+            view2.top == view2.superview!.top
+            view2.right == view2.superview!.right
+            view2.bottom == view2.superview!.bottom
+            view2.width == view2.height
         }
     }
 }
@@ -120,7 +162,78 @@ private extension XZPreviewPhotoController {
 // MARK: Style
 private extension XZPreviewPhotoController {
     func style() {
-        collectionView?.pagingEnabled = true
+        func styleCollectionView() {
+            collectionView?.pagingEnabled = true
+        }
+        func styleToolBarView() {
+            func styleToolBarContainerView() {
+                toolBarView.backgroundColor = PhotoPreview_BottomToolBarBgColor
+            }
+            func styleOKButton() {
+                okButton.setTitle("完成", forState: .Normal)
+                okButton.setTitleColor(PhotoPreview_BottomToolBarOKButtonColor_Normal, forState: .Normal)
+                okButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoPreview_BottomToolBarFontSize)
+                okButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+            }
+            func styleNumberLabel() {
+                numberOfSelectedLabel.text = ""
+                numberOfSelectedLabel.textAlignment = .Center
+                numberOfSelectedLabel.textColor = UIColor.whiteColor()
+                numberOfSelectedLabel.font = UIFont.systemFontOfSize(PhotoPreview_BottomToolBarFontSize)
+            }
+            func styleNumberCircleView() {
+                circleOfNumberImageView.backgroundColor = PhotoPreview_BottomToolBarOKButtonColor_Normal
+                circleOfNumberImageView.clipsToBounds = true
+                circleOfNumberImageView.layer.cornerRadius = PhotoPreview_BottomToolBarNumberOfSelectedLabelHeight/2
+            }
+            
+            styleOKButton()
+            styleNumberLabel()
+            styleNumberCircleView()
+            styleToolBarContainerView()
+        }
+        func styleNavBarView() {
+            func styleNavBarContainerView() {
+                navBarView.backgroundColor = PhotoPreview_NavBarBgColor
+            }
+            func styleBackButton() {
+                backButton.setImage(UIImage(named: "navi_back"), forState: .Normal)
+            }
+            func styleCheckmarkButton() {
+                checkmarkButton.setImage(UIImage(named: "photoPreview_checkmark_uncheck"), forState: .Normal)
+                checkmarkButton.setImage(UIImage(named: "photoPreview_checkmark_checked"), forState: .Selected)
+            }
+            styleNavBarContainerView()
+            styleBackButton()
+            styleCheckmarkButton()
+        }
+        
+        styleToolBarView()
+        styleCollectionView()
+        styleNavBarView()
+    }
+    
+    func toggleNavAndToolBarStatus() {
+        if navBarView.hidden == true && toolBarView.hidden == true {
+            navBarView.hidden = false
+            toolBarView.hidden = false
+        } else {
+            navBarView.hidden = true
+            toolBarView.hidden = true
+        }
+    }
+}
+
+// MARK: Actions
+extension XZPreviewPhotoController {
+    func backButtonPressed(sender: UIButton) {
+        navigationController?.popViewControllerAnimated(true)
+    }
+    func checkmarkButtonPressed(sender: UIButton) {
+        checkmarkButton.selected = !checkmarkButton.selected
+    }
+    func okButtonPressed(sender: UIButton) {
+        
     }
 }
 
@@ -136,11 +249,10 @@ extension XZPreviewPhotoController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PhotoPreviewCell_Identifier, forIndexPath: indexPath) as! XZPreviewPhotoCell
         cell.model = models[indexPath.row]
         
+        weak var weakSelf = self
         cell.singleTapGestureBlock = {() -> () in
             // TBD... show/hide toolbar and navBar
-            
-            
-            
+            weakSelf!.toggleNavAndToolBarStatus()
         }
         return cell
     }

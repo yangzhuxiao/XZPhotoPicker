@@ -53,13 +53,24 @@ let PhotoCollection_BottomToolBarPreviewButtonColor_Disabled = RGBA(0, green: 0,
 let PhotoCollection_BottomToolBarNumberOfSelectedLabelHeight: CGFloat = 20
 let PhotoCollection_BottomToolBarFontSize: CGFloat = 16
 
+// MARK: Photo Preview View
 let PhotoPreview_MaximumZoomScale: CGFloat = 2.0
 let PhotoPreview_MinumumZoomScale: CGFloat = 1.0
 
 let PhotoPreviewCell_Identifier: String = "PreviewPhotoCell"
+
+let PhotoPreview_BottomToolBarBgColor = RGBA(100, green: 100, blue: 100, alpha: 0.5)
 let PhotoPreview_BottomToolBarHeight: CGFloat = 49
+
+let PhotoPreview_BottomToolBarOKButtonColor_Normal = RGBA(0, green: 220, blue: 0, alpha: 1)
+
+let PhotoPreview_BottomToolBarNumberOfSelectedLabelHeight: CGFloat = 20
+let PhotoPreview_BottomToolBarFontSize: CGFloat = 16
+
 let PhotoPreview_MaxWidth: CGFloat = 600 // Default is 600
 
+let PhotoPreview_NavBarBgColor = RGBA(100, green: 100, blue: 100, alpha: 0.5)
+let PhotoPreview_NavBarHeight: CGFloat = 64
 
 
 
