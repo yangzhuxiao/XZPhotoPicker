@@ -39,7 +39,6 @@ class XZPreviewPhotoCell: UICollectionViewCell {
         let doubleTapping = UITapGestureRecognizer(target: self, action: #selector(XZPreviewPhotoCell.doubleTap(_:)))
         doubleTapping.numberOfTapsRequired = 2
         self.addGestureRecognizer(doubleTapping)
-        
 //        singleTapping.requireGestureRecognizerToFail(doubleTapping)
     }
     
@@ -70,6 +69,7 @@ private extension XZPreviewPhotoCell {
         if photoImageView == nil {
             setupPhotoImageView()
 //            layoutPhotoImageView()
+            stylePhotoImageView()
         }
     }
 }
@@ -104,6 +104,11 @@ private extension XZPreviewPhotoCell {
         scrollContainerView?.showsVerticalScrollIndicator = false
         scrollContainerView?.showsHorizontalScrollIndicator = true
     }
+    
+    func stylePhotoImageView() {
+        photoImageView!.contentMode = UIViewContentMode.ScaleAspectFill
+        photoImageView!.clipsToBounds = true
+    }
 }
 
 // MARK: Resize subviews
@@ -124,9 +129,6 @@ extension XZPreviewPhotoCell {
             imgNewHeight = floor(photo.size.height / (photo.size.width / ScreenWidth))
         } else {
             imgNewHeight = floor(photo.size.height / photo.size.width * ScreenWidth)
-//            if imgNewHeight!.isNaN || imgNewHeight < scrollContainerView!.frame.size.height {
-//                imgNewHeight = ScreenHeight
-//            }
             imgCenterY = ScreenHeight / 2
         }
         

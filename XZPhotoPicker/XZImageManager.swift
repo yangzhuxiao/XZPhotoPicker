@@ -95,15 +95,14 @@ extension XZImageManager {
 // MARK: get photos
 extension XZImageManager {
     func getAlbumListCellCoverImageWithAlbumModel(model: XZAlbumModel, phWidth: CGFloat, completion: (coverImage: UIImage) -> ()) {
-        let coverAsset: PHAsset = model.result.firstObject as! PHAsset
+        let coverAsset: PHAsset = model.result.lastObject as! PHAsset
         getPhotoWithAsset(coverAsset, photoWidth: phWidth) { (coverImg) in
             completion(coverImage: coverImg)
         }
     }
     
     func getPhotoWithAsset(asset: PHAsset, completion: (img: UIImage) -> ()) {
-        var maxPhotoWidth = ScreenWidth > PhotoPreview_MaxWidth ? PhotoPreview_MaxWidth : ScreenWidth
-        maxPhotoWidth = maxPhotoWidth / ImageScaleFactor
+        let maxPhotoWidth = ScreenWidth > PhotoPreview_MaxWidth ? PhotoPreview_MaxWidth : ScreenWidth
         getPhotoWithAsset(asset, photoWidth: maxPhotoWidth) { (img) in
             completion(img: img)
         }

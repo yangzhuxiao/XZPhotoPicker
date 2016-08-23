@@ -206,6 +206,9 @@ private extension XZPhotoCollectionController {
             circleOfNumberImageView.hidden = false
             
             numberOfSelectedLabel.text = String(SelectedAssets.count)
+            
+            UIView.oscillatoryAnimationWithLayer(circleOfNumberImageView.layer, max: 1.4, min: 0.7)
+
         } else {
             previewButton.enabled = false
             okButton.enabled = false

@@ -95,6 +95,9 @@ private extension XZPhotoCollectionCell {
     func setupCheckmarkStatus() {
         if checkmarkImageView != nil && checkmarkButton != nil {
             checkmarkImageView!.image = checkmarkButton!.selected ? UIImage(named: "photoCollectionCell_checkmark_checked") : UIImage(named: "photoCollectionCell_checkmark_uncheck")
+            if checkmarkButton!.selected {
+                UIView.oscillatoryAnimationWithLayer(checkmarkImageView!.layer, max: 1.2, min: 0.88)
+            }
         }
     }
 }

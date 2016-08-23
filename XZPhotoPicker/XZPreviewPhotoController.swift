@@ -257,12 +257,19 @@ extension XZPreviewPhotoController {
                 currentModel.selected = false
                 }, { (success) in
                     weakSelf!.refreshNavAndToolBarDataStatus()
+                    UIView.oscillatoryAnimationWithLayer(weakSelf!.circleOfNumberImageView.layer, max: 1.4, min: 0.7)
             })
         } else {
             removeAsset(currentModel.asset, { (success) in
                 weakSelf!.refreshNavAndToolBarDataStatus()
+                UIView.oscillatoryAnimationWithLayer(weakSelf!.circleOfNumberImageView.layer, max: 1.4, min: 0.7)
             })
         }
+        
+        if checkmarkButton.selected {
+            UIView.oscillatoryAnimationWithLayer(checkmarkButton.layer, max: 1.2, min: 0.8)
+        }
+        
     }
     func okButtonPressed(sender: UIButton) {
         
@@ -288,12 +295,6 @@ extension XZPreviewPhotoController: UICollectionViewDataSource {
         }
         return cell
     }
-//    func collectionView(collectionView: UICollectionView, willDisplayCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-//        (cell as! XZPreviewPhotoCell).recoverSubviews()
-//    }
-//    func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
-//        (cell as! XZPreviewPhotoCell).recoverSubviews()
-//    }
 }
 
 // MARK: UIScrollViewDelegate
