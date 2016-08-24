@@ -39,10 +39,6 @@ class XZPhotoCollectionCell: UICollectionViewCell {
                     }
                 })
                 
-//                if imageRequestID != 0 && self.imageRequestID != 0 && imageRequestID != self.imageRequestID {
-//                    PHImageManager.defaultManager().cancelImageRequest(self.imageRequestID)
-//                }
-                
                 self.imageRequestID = imageRequestID
                 self.checkmarkButton?.selected = model!.selected
                 setupCheckmarkStatus()

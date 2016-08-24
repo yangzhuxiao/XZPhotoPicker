@@ -84,14 +84,6 @@ private extension XZPreviewPhotoCell {
             view.bottom == view.superview!.bottom
         }
     }
-//    func layoutPhotoImageView() {
-//        constrain(photoImageView!) { (view) in
-//            view.left == view.superview!.left
-//            view.right == view.superview!.right
-//            view.top == view.superview!.top
-//            view.bottom == view.superview!.bottom
-//        }
-//    }
 }
 
 // MARK: Style

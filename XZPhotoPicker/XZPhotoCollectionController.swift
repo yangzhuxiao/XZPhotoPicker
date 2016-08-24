@@ -171,6 +171,7 @@ private extension XZPhotoCollectionController {
                 okButton.setTitleColor(PhotoCollection_BottomToolBarOKButtonColor_Disabled, forState: .Disabled)
                 okButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
                 okButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
+                okButton.addTarget(self, action: #selector(XZPhotoCollectionController.okButtonPressed(_:)), forControlEvents: .TouchUpInside)
             }
             func styleNumberLabel() {
                 numberOfSelectedLabel.text = ""
@@ -266,6 +267,16 @@ extension XZPhotoCollectionController: UICollectionViewDelegate {
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         let previewVC = XZPreviewPhotoController(currentIndex: indexPath.row, models: model.models)
         self.navigationController?.pushViewController(previewVC, animated: true)
+    }
+}
+
+// MARK: Actions
+extension XZPhotoCollectionController {
+    func okButtonPressed(sender: UIButton) {
+        if sender === okButton {
+            let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
+            navigationController?.pushViewController(postVC, animated: true)
+        }
     }
 }
 

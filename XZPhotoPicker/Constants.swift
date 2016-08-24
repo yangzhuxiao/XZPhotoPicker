@@ -115,6 +115,21 @@ let PhotoPreview_MaxWidth: CGFloat = 600 // Default is 600
 let PhotoPreview_NavBarBgColor = RGBA(100, green: 100, blue: 100, alpha: 0.6)
 let PhotoPreview_NavBarHeight: CGFloat = 64
 
+// MARK: Post Photo and Text View
+let textViewPlaceholder = "想说点什么"
+let PostPhoto_CoverPhotoLabelBgColor = RGBA(255, green: 255, blue: 0, alpha: 0.5)
+let PostPhoto_TextViewHorizontalMargin: CGFloat = 10
+let PostPhoto_CollectionCellMargin: CGFloat = 5
+let PostPhoto_NumOfPhotosInARow: Int = 4
+let PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth = (ScreenWidth - 2 * PostPhoto_TextViewHorizontalMargin - (CGFloat(PostPhoto_NumOfPhotosInARow) - 1) * PostPhoto_CollectionCellMargin) / CGFloat(PostPhoto_NumOfPhotosInARow)
+
+let PostPhoto_PhotoAndTextCell_PhotoCollectionCell_Identifier: String = "PostPhoto_PhotoAndTextCell_PhotoCollectionCell"
+let PostPhoto_PhotoAndTextTableViewCell: String = "PostPhoto_PhotoAndTextTableViewCell"
+let PostPhoto_TextViewHeight: CGFloat = 80
+let PostPhoto_CollectionViewTopMargin: CGFloat = 10
+
+
+
 
 
 
