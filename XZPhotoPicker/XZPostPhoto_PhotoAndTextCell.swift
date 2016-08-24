@@ -37,10 +37,14 @@ private extension XZPostPhoto_PhotoAndTextCell {
     func setupSubviewsIfNeeded() {
         func setupTextView() {
             if textView == nil {
-                textView = UITextView()
+                let textViewXOrigin = PostPhoto_TextViewHorizontalMargin
+                let textViewYOrigin: CGFloat = 0
+                let textViewWidth = ScreenWidth - 2 * PostPhoto_TextViewHorizontalMargin
+                
+                textView = UITextView(frame: CGRectMake(textViewXOrigin, textViewYOrigin, textViewWidth, PostPhoto_TextViewHeight))
                 contentView.addSubview(textView!)
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.textViewTextDidChange(_:)), name: UITextViewTextDidChangeNotification, object: nil)
-                layoutTextView()
+                styleTextView()
             }
         }
         func setupCollectionView() {
@@ -68,7 +72,6 @@ private extension XZPostPhoto_PhotoAndTextCell {
                     collectionView!.registerClass(XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell.self, forCellWithReuseIdentifier: PostPhoto_PhotoAndTextCell_PhotoCollectionCell_Identifier)
                     contentView.addSubview(collectionView!)
                 }
-                layoutCollectionView()
                 styleCollectionView()
             }
         }
@@ -77,6 +80,7 @@ private extension XZPostPhoto_PhotoAndTextCell {
                 placeholderLabel = UILabel()
                 contentView.addSubview(placeholderLabel!)
                 layoutPlaceholderLabel()
+                stylePlaceholderLabel()
             }
         }
         
@@ -88,28 +92,10 @@ private extension XZPostPhoto_PhotoAndTextCell {
 
 // MARK: Layout
 private extension XZPostPhoto_PhotoAndTextCell {
-    func layoutTextView() {
-        constrain(textView!) { (view) in
-            view.top == view.superview!.top
-            view.left == view.superview!.left + PostPhoto_TextViewHorizontalMargin
-            view.right == view.superview!.right - PostPhoto_TextViewHorizontalMargin
-            view.height == PostPhoto_TextViewHeight
-        }
-    }
-    
-    func layoutCollectionView() {
-        constrain(collectionView!, textView!) { (view1, view2) in
-//            view1.left == view2.left
-//            view1.right == view2.right
-//            view1.top == view2.bottom
-//            view1.bottom == view1.superview!.bottom
-        }
-    }
-    
     func layoutPlaceholderLabel() {
         constrain(placeholderLabel!, textView!) { (view1, view2) in
-            view1.left == view2.left
-            view1.top == view2.top
+            view1.left == view2.left + 5
+            view1.top == view2.top + 5
             view1.right == view2.right
             view1.height == 20
         }
@@ -119,11 +105,16 @@ private extension XZPostPhoto_PhotoAndTextCell {
 // MARK: Style
 private extension XZPostPhoto_PhotoAndTextCell {
     func styleTextView() {
-        textView?.backgroundColor = UIColor.lightGrayColor()
+//        textView?.backgroundColor = UIColor.lightGrayColor()
     }
     func styleCollectionView() {
         collectionView?.backgroundColor = UIColor.whiteColor()
         collectionView?.scrollEnabled = false
+    }
+    func stylePlaceholderLabel() {
+        placeholderLabel?.text = textViewPlaceholder
+        placeholderLabel?.textColor = UIColor.lightGrayColor()
+        placeholderLabel?.font = UIFont.systemFontOfSize(14)
     }
 }
 
