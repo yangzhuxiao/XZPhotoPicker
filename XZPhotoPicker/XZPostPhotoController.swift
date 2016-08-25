@@ -67,6 +67,7 @@ private extension XZPostPhotoController {
 private extension XZPostPhotoController {
     func styleTableView() {
         tableView?.backgroundColor = UIColor.whiteColor()
+        tableView?.tableFooterView = UIView()
     }
 }
 

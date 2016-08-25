@@ -16,12 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
-        let rootVC = XZAlbumListController()
+        let rootVC = ViewController()
         let rootNav = UINavigationController(rootViewController: rootVC)
-        rootNav.navigationBar.barTintColor = NavBgColor
-        rootNav.navigationBar.barStyle = UIBarStyle.BlackOpaque
-        rootNav.navigationBar.translucent = false
-        
+                
         let mainWindow = UIWindow(frame: UIScreen.mainScreen().bounds)
         mainWindow.rootViewController = rootNav
         mainWindow.backgroundColor = UIColor.clearColor()
