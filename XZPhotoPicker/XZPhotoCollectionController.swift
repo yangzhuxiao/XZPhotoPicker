@@ -162,6 +162,7 @@ private extension XZPhotoCollectionController {
                 previewButton.setTitleColor(PhotoCollection_BottomToolBarPreviewButtonColor_Normal, forState: .Normal)
                 previewButton.setTitleColor(PhotoCollection_BottomToolBarPreviewButtonColor_Disabled, forState: .Disabled)
                 previewButton.titleLabel?.font = UIFont.systemFontOfSize(PhotoCollection_BottomToolBarFontSize)
+                previewButton.addTarget(self, action: #selector(XZPhotoCollectionController.previewButtonPressed(_:)), forControlEvents: .TouchUpInside)
             }
             func styleOKButton() {
                 okButton.setTitle("完成", forState: .Normal)
@@ -276,6 +277,23 @@ extension XZPhotoCollectionController {
         if sender === okButton {
             let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
             navigationController?.pushViewController(postVC, animated: true)
+        }
+    }
+    func previewButtonPressed(sender: UIButton) {
+        if sender === previewButton {
+            if SelectedAssets.count > 0 {
+                let firstAsset: XZAssetModel = SelectedAssets[0]
+                var currentIndex = -1
+                for assetModel in model.models {
+                    if XZImageManager.manager.getAssetIdentifier(assetModel.asset) == XZImageManager.manager.getAssetIdentifier(firstAsset.asset) {
+                        currentIndex = model.models.indexOf(assetModel)!
+                    }
+                }
+                if currentIndex >= 0 {
+                    let previewVC = XZPreviewPhotoController(currentIndex: currentIndex, models: model.models)
+                    self.navigationController?.pushViewController(previewVC, animated: true)
+                }
+            }
         }
     }
 }
