@@ -88,9 +88,13 @@ private extension XZPhotoCollectionController {
             toolBarView.addSubview(numberOfSelectedLabel)
             toolBarView.addSubview(okButton)
         }
+        func setupNavigationItem() {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "取消", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(XZAlbumListController.cancelButtonPressed(_:)))
+        }
         
         setupCollectionView()
         setupBottomToolBar()
+        setupNavigationItem()
     }
 }
 
@@ -299,6 +303,11 @@ extension XZPhotoCollectionController {
                     self.navigationController?.pushViewController(previewVC, animated: true)
                 }
             }
+        }
+    }
+    func cancelButtonPressed(sender: UIBarButtonItem) {
+        dismissViewControllerAnimated(true) {
+            emptySelectedAssets()
         }
     }
 }

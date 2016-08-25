@@ -42,10 +42,12 @@ private extension XZAlbumListController {
         tableView.delegate = self
         tableView.rowHeight = AlbumListRowHeight
         view.addSubview(tableView)
+        
+        setupNavigationItem()
     }
     
     func setupNavigationItem() {
-        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "取消", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(XZAlbumListController.cancelButtonPressed(_:)))
     }
 }
 
@@ -106,6 +108,15 @@ extension XZAlbumListController: UITableViewDelegate {
         let selectedModel: XZAlbumModel = albums[indexPath.row] as! XZAlbumModel
         navigationController?.pushViewController(XZPhotoCollectionController(model: selectedModel),
                                                  animated: true)
+    }
+}
+
+// MARK: Actions
+extension XZAlbumListController {
+    func cancelButtonPressed(sender: UIBarButtonItem) {
+        dismissViewControllerAnimated(true) {
+            emptySelectedAssets()
+        }
     }
 }
 
