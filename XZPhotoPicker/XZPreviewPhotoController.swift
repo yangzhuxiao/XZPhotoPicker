@@ -284,8 +284,15 @@ extension XZPreviewPhotoController {
                         // do nothing
                 })
             }
-            let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
-            navigationController?.pushViewController(postVC, animated: true)
+            
+            // dismiss photo-selection-related view, present post photo view
+            weak var presentingVC = self.presentingViewController
+            dismissViewControllerAnimated(false, completion: {
+                let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
+                let postNav = UINavigationController(rootViewController: postVC)
+                presentingVC!.presentViewController(postNav, animated: true, completion: {
+                })
+            })
         }
     }
 }

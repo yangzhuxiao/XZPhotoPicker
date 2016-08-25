@@ -34,6 +34,7 @@ extension ViewController {
         let albumAction = UIAlertAction(title: "从手机相册选择", style: UIAlertActionStyle.Default) { (action) in
             XZImageManager.manager.authorizationStatus({
                 // authorized
+                // go to photo album
                 let albumVC = XZAlbumListController()
                 let albumNav = UINavigationController(rootViewController: albumVC)
                 self.presentViewController(albumNav, animated: true, completion: {
@@ -51,10 +52,10 @@ extension ViewController {
                 let alert = UIAlertView(title: nil, message: "请在iPhone的\"设置-隐私-照片\"选项中，\r允许访问你的手机相册", delegate: nil, cancelButtonTitle: "OK")
                 alert.show()
             }
-            // go to photo album
         }
         let photoAction = UIAlertAction(title: "拍照", style: UIAlertActionStyle.Default) { (action) in
             // take a picture
+            
         }
         let cancelAction = UIAlertAction(title: "取消", style: UIAlertActionStyle.Cancel) { (action) in
             // dismiss action sheet

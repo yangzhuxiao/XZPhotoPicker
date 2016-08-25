@@ -44,7 +44,13 @@ private extension XZPostPhotoController {
             tableView?.delegate = self
             view.addSubview(tableView!)
         }
+        func setupNavigationItems() {
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "取消", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(XZPostPhotoController.cancelButtonPressed(_:)))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发送", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(XZPostPhotoController.sendButtonPressed(_:)))
+
+        }
         setupTableView()
+        setupNavigationItems()
     }
 }
 
@@ -104,6 +110,17 @@ extension XZPostPhotoController: UITableViewDelegate {
     }
 }
 
+// MARK: Actions
+extension XZPostPhotoController {
+    func cancelButtonPressed(sender: UIBarButtonItem) {
+        dismissViewControllerAnimated(true) {
+            emptySelectedAssets()
+        }
+    }
+    func sendButtonPressed(sender: UIBarButtonItem) {
+        // TBD...
+    }
+}
 
 
 

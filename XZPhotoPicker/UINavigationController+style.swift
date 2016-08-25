@@ -16,6 +16,7 @@ extension UINavigationController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         navigationBar.barTintColor = NavBgColor
+        navigationBar.tintColor = UIColor.whiteColor()
         navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationBar.translucent = false
     }
