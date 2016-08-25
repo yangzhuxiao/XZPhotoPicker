@@ -65,6 +65,7 @@ private extension XZAlbumListController {
 private extension XZAlbumListController {
     func style() {
         view.backgroundColor = UIColor.whiteColor()
+        tableView.tableFooterView = UIView()
     }
 }
 

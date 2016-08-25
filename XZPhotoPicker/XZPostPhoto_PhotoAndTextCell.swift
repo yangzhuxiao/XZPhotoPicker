@@ -30,6 +30,10 @@ class XZPostPhoto_PhotoAndTextCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func textViewShouldResignFirstResponder() {
+        textView!.resignFirstResponder()
+    }
 }
 
 // MARK: Setup
@@ -95,7 +99,7 @@ private extension XZPostPhoto_PhotoAndTextCell {
     func layoutPlaceholderLabel() {
         constrain(placeholderLabel!, textView!) { (view1, view2) in
             view1.left == view2.left + 5
-            view1.top == view2.top + 5
+            view1.top == view2.top + 6
             view1.right == view2.right
             view1.height == 20
         }
@@ -105,7 +109,7 @@ private extension XZPostPhoto_PhotoAndTextCell {
 // MARK: Style
 private extension XZPostPhoto_PhotoAndTextCell {
     func styleTextView() {
-//        textView?.backgroundColor = UIColor.lightGrayColor()
+        textView?.font = UIFont.systemFontOfSize(14)
     }
     func styleCollectionView() {
         collectionView?.backgroundColor = UIColor.whiteColor()

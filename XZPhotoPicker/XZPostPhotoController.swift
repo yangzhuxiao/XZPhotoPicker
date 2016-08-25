@@ -63,7 +63,6 @@ private extension XZPostPhotoController {
     }
 }
 
-
 // MARK: Style
 private extension XZPostPhotoController {
     func styleTableView() {
@@ -98,7 +97,18 @@ extension XZPostPhotoController: UITableViewDelegate {
         let rows: Int = assetsArray.count / 4 + 1
         return PostPhoto_TextViewHeight + CGFloat(rows) * PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth + (CGFloat(rows) + 1) * PostPhoto_CollectionCellMargin + PostPhoto_CollectionViewTopMargin
     }
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        let cell = tableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! XZPostPhoto_PhotoAndTextCell
+        cell.textViewShouldResignFirstResponder()
+    }
 }
+
+
+
+
+
+
+
 
 
 
