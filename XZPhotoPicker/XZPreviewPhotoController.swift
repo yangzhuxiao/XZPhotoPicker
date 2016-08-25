@@ -272,7 +272,21 @@ extension XZPreviewPhotoController {
         
     }
     func okButtonPressed(sender: UIButton) {
-        
+        if sender === okButton {
+            if SelectedAssets.count == 0 {
+                let currentModel: XZAssetModel = models[currentIndex]
+                currentModel.selected = assetIsSelected(currentModel.asset)
+                addAssetModelToSelected(currentModel, { (fail) in
+                    let alert = UIAlertView(title: nil, message: "选择照片失败", delegate: nil, cancelButtonTitle: "OK")
+                    alert.show()
+                    return
+                    }, { (success) in
+                        // do nothing
+                })
+            }
+            let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
+            navigationController?.pushViewController(postVC, animated: true)
+        }
     }
 }
 

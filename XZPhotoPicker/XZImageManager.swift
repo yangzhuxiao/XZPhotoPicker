@@ -39,6 +39,22 @@ class XZImageManager: NSObject {
     }
 }
 
+// MARK: Photo Library Authorization
+extension XZImageManager {
+    func authorizationStatus(authorized: ()->(), notDetermined: ()->(), restricted: ()->(), denied: () -> ()) {
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .Authorized:
+            authorized()
+        case .Denied:
+            denied()
+        case .NotDetermined:
+            notDetermined()
+        case .Restricted:
+            restricted()
+        }
+    }
+}
+
 // MARK: get albums
 extension XZImageManager {
     func getAllAlbums(completion: (Array<XZAlbumModel>) -> ()) {

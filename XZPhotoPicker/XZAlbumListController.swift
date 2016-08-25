@@ -25,6 +25,22 @@ class XZAlbumListController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        XZImageManager.manager.authorizationStatus({
+            // authorized
+            
+            }, notDetermined: {
+                // notDetermined
+                let alert = UIAlertView(title: nil, message: "请在iPhone的\"设置-隐私-照片\"选项中，\r允许访问你的手机相册", delegate: nil, cancelButtonTitle: "OK")
+                alert.show()
+            }, restricted: {
+                // restricted
+                let alert = UIAlertView(title: nil, message: "请在iPhone的\"设置-隐私-照片\"选项中，\r允许访问你的手机相册", delegate: nil, cancelButtonTitle: "OK")
+                alert.show()
+            }) {
+                // denied
+                let alert = UIAlertView(title: nil, message: "请在iPhone的\"设置-隐私-照片\"选项中，\r允许访问你的手机相册", delegate: nil, cancelButtonTitle: "OK")
+                alert.show()
+        }
         setup()
         layout()
         style()
