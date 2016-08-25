@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 
 class ViewController: UIViewController {
+    private var showPostVC = {() -> () in }
     init() {
         super.init(nibName: nil, bundle: nil)
     }

@@ -275,8 +275,13 @@ extension XZPhotoCollectionController: UICollectionViewDelegate {
 extension XZPhotoCollectionController {
     func okButtonPressed(sender: UIButton) {
         if sender === okButton {
-            let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
-            navigationController?.pushViewController(postVC, animated: true)
+            weak var presentingVC = self.presentingViewController
+            dismissViewControllerAnimated(false, completion: {
+                let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
+                let postNav = UINavigationController(rootViewController: postVC)
+                presentingVC!.presentViewController(postNav, animated: true, completion: {
+                })
+            })
         }
     }
     func previewButtonPressed(sender: UIButton) {

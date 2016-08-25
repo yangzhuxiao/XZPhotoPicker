@@ -94,7 +94,7 @@ extension XZAlbumListController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCellWithIdentifier(AlbumListCell_Identifier) as! XZAlbumListCell
         cell.model = currentModel
         cell.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator;
-//        cell.selectionStyle = UITableViewCellSelectionStyle.None
+        cell.selectionStyle = UITableViewCellSelectionStyle.None
         return cell
     }
 }
