@@ -28,6 +28,11 @@ class XZAlbumListController: UIViewController {
         setup()
         layout()
         style()
+//        loadData()
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
         loadData()
     }
 }
