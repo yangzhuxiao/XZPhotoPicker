@@ -39,10 +39,22 @@ class XZImageManager: NSObject {
     }
 }
 
-// MARK: Photo Library Authorization
+// MARK: Authorization
 extension XZImageManager {
-    func authorizationStatus(authorized: ()->(), notDetermined: ()->(), restricted: ()->(), denied: () -> ()) {
+    func authorizationStatusForAlbum(authorized: ()->(), notDetermined: ()->(), restricted: ()->(), denied: () -> ()) {
         switch PHPhotoLibrary.authorizationStatus() {
+        case .Authorized:
+            authorized()
+        case .Denied:
+            denied()
+        case .NotDetermined:
+            notDetermined()
+        case .Restricted:
+            restricted()
+        }
+    }
+    func authorizationStatusForCamera(authorized: ()->(), notDetermined: ()->(), restricted: ()->(), denied: () -> ()) {
+        switch AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) {
         case .Authorized:
             authorized()
         case .Denied:
@@ -68,6 +80,7 @@ extension XZImageManager {
         
         let option: PHFetchOptions = PHFetchOptions()
         option.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.Image.rawValue)
+        option.sortDescriptors = [NSSortDescriptor(key: "modificationDate", ascending: true)]
 
         for i in 0..<smartAlbums.count {
             let collection = smartAlbums[i] as! PHAssetCollection
@@ -153,6 +166,35 @@ extension XZImageManager {
             }
         }
         completion(assetsArray)
+    }
+    
+    func getLastPhotoFromCameraRoll() -> (XZAssetModel) {
+        var lastModel: XZAssetModel? = nil
+        if let cameraRolls: Array<XZAssetModel> = getCameraRollAlbum()?.models {
+            lastModel = cameraRolls[cameraRolls.count - 1]
+        }
+        return lastModel!
+    }
+    
+    func getCameraRollAlbum() -> (XZAlbumModel?) {
+        let smartAlbums: PHFetchResult = PHAssetCollection.fetchAssetCollectionsWithType(PHAssetCollectionType.SmartAlbum, subtype: PHAssetCollectionSubtype.AlbumRegular, options: nil)
+        
+        let option: PHFetchOptions = PHFetchOptions()
+        option.predicate = NSPredicate(format: "mediaType = %d", PHAssetMediaType.Image.rawValue)
+        option.sortDescriptors = [NSSortDescriptor(key: "modificationDate", ascending: true)]
+        
+        for i in 0..<smartAlbums.count {
+            let collection = smartAlbums[i] as! PHAssetCollection
+            let fetchResult: PHFetchResult = PHAsset.fetchAssetsInAssetCollection(collection, options: option)
+            if collection.localizedTitle == "Camera Roll"
+                || collection.localizedTitle == "相机胶卷"
+                || collection.localizedTitle == "所有照片"
+                || collection.localizedTitle == "All Photos" {
+                
+                return modelWithResult(fetchResult, name: collection.localizedTitle!)
+            }
+        }
+        return nil
     }
 }
 
