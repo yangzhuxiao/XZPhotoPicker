@@ -42,7 +42,7 @@ class XZPostPhotoPreviewController: UIViewController {
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        
+        // refresh post view
         let postVC = self.navigationController!.topViewController as! XZPostPhotoController // already poped from stack
         postVC.shouldReloadData()
     }
@@ -89,10 +89,6 @@ private extension XZPostPhotoPreviewController {
 private extension XZPostPhotoPreviewController {
     func layoutView() {
         constrain(collectionView!) { (view) in
-//            view.top == view.superview!.top
-//            view.left == view.superview!.left
-//            view.right == view.superview!.right
-//            view.bottom == view.superview!.bottom
         }
     }
 }
@@ -113,14 +109,14 @@ private extension XZPostPhotoPreviewController {
     
     func toggleNaviBarDisplayStatus() {
         if navigationController?.navigationBarHidden == true {
-            UIView.animateWithDuration(0.5, animations: {
+            UIView.animateWithDuration(0.2, animations: {
                 self.navigationController!.navigationBarHidden = false
                 self.collectionView!.frame = CGRectOffset(self.collectionView!.frame, 0, self.cvYOrigin)
                 ShowStatusbar()
                 }, completion: { (success) in
             })
         } else {
-            UIView.animateWithDuration(0.5, animations: {
+            UIView.animateWithDuration(0.2, animations: {
                 self.navigationController!.navigationBarHidden = true
                 self.collectionView!.frame = CGRectOffset(self.collectionView!.frame, 0, -self.cvYOrigin)
                 HideStatusbar()
@@ -185,12 +181,5 @@ extension XZPostPhotoPreviewController {
         }
     }
 }
-
-
-
-
-
-
-
 
 

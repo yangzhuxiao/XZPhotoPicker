@@ -39,7 +39,7 @@ class XZPreviewPhotoCell: UICollectionViewCell {
         let doubleTapping = UITapGestureRecognizer(target: self, action: #selector(XZPreviewPhotoCell.doubleTap(_:)))
         doubleTapping.numberOfTapsRequired = 2
         self.addGestureRecognizer(doubleTapping)
-//        singleTapping.requireGestureRecognizerToFail(doubleTapping)
+        singleTapping.requireGestureRecognizerToFail(doubleTapping)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -68,7 +68,6 @@ private extension XZPreviewPhotoCell {
         
         if photoImageView == nil {
             setupPhotoImageView()
-//            layoutPhotoImageView()
             stylePhotoImageView()
         }
     }
