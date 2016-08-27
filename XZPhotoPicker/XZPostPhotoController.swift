@@ -31,23 +31,28 @@ class XZPostPhotoController: UIViewController {
         layoutView()
         styleTableView()
     }
+    
+    func shouldReloadData() {
+        self.assetsArray = SelectedAssets
+        tableView!.reloadData()
+    }
 }
 
 // MARK: Setup
 private extension XZPostPhotoController {
     func setup() {
         func setupTableView() {
-            tableView = UITableView(frame: CGRectMake(0, 0, ScreenWidth, ScreenHeight), style: UITableViewStyle.Plain)
-            tableView!.registerClass(XZPostPhoto_PhotoAndTextCell.self, forCellReuseIdentifier: PostPhoto_PhotoAndTextTableViewCell)
-
-            tableView?.dataSource = self
-            tableView?.delegate = self
-            view.addSubview(tableView!)
+            if tableView == nil {
+                tableView = UITableView(frame: CGRectMake(0, 0, ScreenWidth, ScreenHeight), style: UITableViewStyle.Plain)
+                tableView?.registerClass(XZPostPhotoFirstCell.self, forCellReuseIdentifier: PostPhotoFirstCell_Identifier)
+                tableView?.dataSource = self
+                tableView?.delegate = self
+                view.addSubview(tableView!)
+            }
         }
         func setupNavigationItems() {
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "取消", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(XZPostPhotoController.cancelButtonPressed(_:)))
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "发送", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(XZPostPhotoController.sendButtonPressed(_:)))
-
         }
         setupTableView()
         setupNavigationItems()
@@ -92,8 +97,14 @@ extension XZPostPhotoController: UITableViewDataSource {
         return 1
     }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(PostPhoto_PhotoAndTextTableViewCell) as! XZPostPhoto_PhotoAndTextCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(PostPhotoFirstCell_Identifier) as! XZPostPhotoFirstCell
         cell.assetModels = assetsArray
+        
+        weak var weakSelf = self
+        cell.goToPostPreviewBlock = {(currentIndex: Int) -> () in
+            let postPreviewVC = XZPostPhotoPreviewController(currentIndex: currentIndex, models: SelectedAssets)
+            weakSelf!.navigationController?.pushViewController(postPreviewVC, animated: true)
+        }
         return cell
     }
 }
@@ -102,10 +113,10 @@ extension XZPostPhotoController: UITableViewDataSource {
 extension XZPostPhotoController: UITableViewDelegate {
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         let rows: Int = assetsArray.count / 4 + 1
-        return PostPhoto_TextViewHeight + CGFloat(rows) * PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth + (CGFloat(rows) + 1) * PostPhoto_CollectionCellMargin + PostPhoto_CollectionViewTopMargin
+        return PostPhotoFirstCell_TextViewHeight + CGFloat(rows) * PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth + (CGFloat(rows) + 1) * PostPhoto_CollectionCellMargin + PostPhotoFirstCell_CollectionViewTopMargin
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        let cell = tableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! XZPostPhoto_PhotoAndTextCell
+        let cell = tableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! XZPostPhotoFirstCell
         cell.textViewShouldResignFirstResponder()
     }
 }

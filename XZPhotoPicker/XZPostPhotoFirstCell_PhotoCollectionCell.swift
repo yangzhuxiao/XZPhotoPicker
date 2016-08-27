@@ -1,8 +1,8 @@
 //
-//  XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell.swift
+//  XZPostPhotoFirstCell_PhotoCollectionCell.swift
 //  XZPhotoPicker
 //
-//  Created by Jianing Zheng on 8/24/16.
+//  Created by Jianing Zheng on 8/27/16.
 //  Copyright © 2016 Xiao Zhu. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 import Photos
 import Cartography
 
-class XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell: UICollectionViewCell {
+class XZPostPhotoFirstCell_PhotoCollectionCell: UICollectionViewCell {
     private var photoImageView: UIImageView?
     private var coverLabel: UILabel?
     
@@ -29,7 +29,7 @@ class XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell: UICollectionViewCell {
                     if self.representedAssetIdentifier! == XZImageManager.manager.getAssetIdentifier(self.model!.asset) {
                         weakSelf!.photoImageView?.image = img
                     } else {
-//                        print("***---this cell is showing other asset---***")
+                        //                        print("***---this cell is showing other asset---***")
                         if self.imageRequestID != 0 {
                             PHImageManager.defaultManager().cancelImageRequest(self.imageRequestID)
                         }
@@ -65,7 +65,7 @@ class XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell: UICollectionViewCell {
 }
 
 // MARK: Setup
-private extension XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell {
+private extension XZPostPhotoFirstCell_PhotoCollectionCell {
     func setupSubviewsIfNeeded() {
         func setupPhotoImageView() {
             photoImageView = UIImageView()
@@ -90,7 +90,7 @@ private extension XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell {
 }
 
 // MARK: Layout
-private extension XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell {
+private extension XZPostPhotoFirstCell_PhotoCollectionCell {
     func layoutPhotoImageView() {
         constrain(photoImageView!) { (view) in
             view.left == view.superview!.left
@@ -111,7 +111,7 @@ private extension XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell {
 }
 
 // MARK: Style
-private extension XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell {
+private extension XZPostPhotoFirstCell_PhotoCollectionCell {
     func stylePhotoImageView() {
         photoImageView!.contentMode = UIViewContentMode.ScaleAspectFill
         photoImageView!.clipsToBounds = true
@@ -125,7 +125,6 @@ private extension XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell {
         coverLabel?.numberOfLines = 1
     }
 }
-
 
 
 

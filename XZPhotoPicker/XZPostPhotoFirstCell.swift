@@ -1,8 +1,8 @@
 //
-//  XZPostPhoto_PhotoAndTextCell.swift
+//  XZPostPhotoFirstCell.swift
 //  XZPhotoPicker
 //
-//  Created by Jianing Zheng on 8/24/16.
+//  Created by Jianing Zheng on 8/27/16.
 //  Copyright © 2016 Xiao Zhu. All rights reserved.
 //
 
@@ -11,10 +11,11 @@ import UIKit
 import Cartography
 import Photos
 
-class XZPostPhoto_PhotoAndTextCell: UITableViewCell {
+class XZPostPhotoFirstCell: UITableViewCell {
     private var textView: UITextView?
     private var collectionView: UICollectionView?
     private var placeholderLabel: UILabel?
+    var goToPostPreviewBlock = {(currentIndex: Int) -> () in }
     
     var assetModels: Array<XZAssetModel>? {
         didSet {
@@ -37,7 +38,7 @@ class XZPostPhoto_PhotoAndTextCell: UITableViewCell {
 }
 
 // MARK: Setup
-private extension XZPostPhoto_PhotoAndTextCell {
+private extension XZPostPhotoFirstCell {
     func setupSubviewsIfNeeded() {
         func setupTextView() {
             if textView == nil {
@@ -45,7 +46,7 @@ private extension XZPostPhoto_PhotoAndTextCell {
                 let textViewYOrigin: CGFloat = 0
                 let textViewWidth = ScreenWidth - 2 * PostPhoto_TextViewHorizontalMargin
                 
-                textView = UITextView(frame: CGRectMake(textViewXOrigin, textViewYOrigin, textViewWidth, PostPhoto_TextViewHeight))
+                textView = UITextView(frame: CGRectMake(textViewXOrigin, textViewYOrigin, textViewWidth, PostPhotoFirstCell_TextViewHeight))
                 contentView.addSubview(textView!)
                 NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(self.textViewTextDidChange(_:)), name: UITextViewTextDidChangeNotification, object: nil)
                 styleTextView()
@@ -68,12 +69,12 @@ private extension XZPostPhoto_PhotoAndTextCell {
                     let collectionViewHeight = CGFloat(rows) * PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth + (CGFloat(rows) + 1) * PostPhoto_CollectionCellMargin
                     let collectionViewWidth = ScreenWidth - 2 * PostPhoto_TextViewHorizontalMargin
                     let collectionViewXOrigin = PostPhoto_TextViewHorizontalMargin
-                    let collectionViewYOrigin = PostPhoto_TextViewHeight + PostPhoto_CollectionViewTopMargin
+                    let collectionViewYOrigin = PostPhotoFirstCell_TextViewHeight + PostPhotoFirstCell_CollectionViewTopMargin
                     
                     collectionView = UICollectionView(frame: CGRectMake(collectionViewXOrigin, collectionViewYOrigin, collectionViewWidth, collectionViewHeight), collectionViewLayout: collectionViewFlowLayout())
                     collectionView!.dataSource = self
                     collectionView!.delegate = self
-                    collectionView!.registerClass(XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell.self, forCellWithReuseIdentifier: PostPhoto_PhotoAndTextCell_PhotoCollectionCell_Identifier)
+                    collectionView!.registerClass(XZPostPhotoFirstCell_PhotoCollectionCell.self, forCellWithReuseIdentifier: PostPhotoFirstCell_PhotoCollectionCell_Identifier)
                     contentView.addSubview(collectionView!)
                 }
                 styleCollectionView()
@@ -95,7 +96,7 @@ private extension XZPostPhoto_PhotoAndTextCell {
 }
 
 // MARK: Layout
-private extension XZPostPhoto_PhotoAndTextCell {
+private extension XZPostPhotoFirstCell {
     func layoutPlaceholderLabel() {
         constrain(placeholderLabel!, textView!) { (view1, view2) in
             view1.left == view2.left + 5
@@ -107,7 +108,7 @@ private extension XZPostPhoto_PhotoAndTextCell {
 }
 
 // MARK: Style
-private extension XZPostPhoto_PhotoAndTextCell {
+private extension XZPostPhotoFirstCell {
     func styleTextView() {
         textView?.font = UIFont.systemFontOfSize(14)
     }
@@ -123,7 +124,7 @@ private extension XZPostPhoto_PhotoAndTextCell {
 }
 
 // MARK: NSNotificationCenter handler
-extension XZPostPhoto_PhotoAndTextCell {
+extension XZPostPhotoFirstCell {
     func textViewTextDidChange(notification: NSNotification) {
         let textView = notification.object as! UITextView
         placeholderLabel!.hidden = (textView.text as NSString).length <= 0 ? false : true
@@ -131,7 +132,7 @@ extension XZPostPhoto_PhotoAndTextCell {
 }
 
 // MARK: UICollectionViewDataSource
-extension XZPostPhoto_PhotoAndTextCell: UICollectionViewDataSource {
+extension XZPostPhotoFirstCell: UICollectionViewDataSource {
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
         return 1
     }
@@ -142,7 +143,7 @@ extension XZPostPhoto_PhotoAndTextCell: UICollectionViewDataSource {
         return assetModels!.count + 1
     }
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PostPhoto_PhotoAndTextCell_PhotoCollectionCell_Identifier, forIndexPath: indexPath) as! XZPostPhoto_PhotoAndTextCell_PhotoCollectionCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier(PostPhotoFirstCell_PhotoCollectionCell_Identifier, forIndexPath: indexPath) as! XZPostPhotoFirstCell_PhotoCollectionCell
         if indexPath.row == assetModels?.count {
             cell.model = nil
             cell.shouldSetCover(false)
@@ -159,18 +160,16 @@ extension XZPostPhoto_PhotoAndTextCell: UICollectionViewDataSource {
 }
 
 // MARK: UICollectionViewDelegate
-extension XZPostPhoto_PhotoAndTextCell: UICollectionViewDelegate {
+extension XZPostPhotoFirstCell: UICollectionViewDelegate {
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         // go to preview page
+        if SelectedAssets.count < 9 && indexPath.row == SelectedAssets.count {
+            // clicked "+" button
+        } else {
+            goToPostPreviewBlock(indexPath.row)
+        }
     }
 }
-
-
-
-
-
-
-
 
 
 

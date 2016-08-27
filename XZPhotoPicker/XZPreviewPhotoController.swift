@@ -13,7 +13,6 @@ import Cartography
 
 class XZPreviewPhotoController: UIViewController {
     var models: Array<XZAssetModel>
-    var photos: Array<PHAsset> = []
     var currentIndex: Int = 0
     
     private var collectionView: UICollectionView?
@@ -111,11 +110,11 @@ private extension XZPreviewPhotoController {
 // MARK: Layout
 private extension XZPreviewPhotoController {
     func layoutView() {
-        constrain(collectionView!) { (view1) in
-            view1.top == view1.superview!.top
-            view1.left == view1.superview!.left
-            view1.right == view1.superview!.right
-            view1.bottom == view1.superview!.bottom
+        constrain(collectionView!) { (view) in
+            view.top == view.superview!.top
+            view.left == view.superview!.left
+            view.right == view.superview!.right
+            view.bottom == view.superview!.bottom
         }
         constrain(toolBarView) { (view) in
             view.left == view.superview!.left
@@ -322,7 +321,7 @@ extension XZPreviewPhotoController: UICollectionViewDataSource {
 extension XZPreviewPhotoController: UICollectionViewDelegate {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let offsetX = scrollView.contentOffset.x
-        let theIndex = Int(offsetX / ScreenWidth)
+        let theIndex = Int(round(offsetX/ScreenWidth))
         
         if theIndex != currentIndex {
             currentIndex = theIndex

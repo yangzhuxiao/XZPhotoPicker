@@ -51,10 +51,6 @@ class XZPhotoCollectionController: UIViewController {
             shouldScrollToBottom = false
         }
     }
-    
-    deinit {
-        emptySelectedAssets()
-    }
 }
 
 // MARK: Setup

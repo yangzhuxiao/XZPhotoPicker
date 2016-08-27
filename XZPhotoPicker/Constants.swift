@@ -70,7 +70,7 @@ let NavBgColor = RGBA(65, green: 65, blue: 65, alpha: 1)
 // MARK: Album List View
 let AlbumListRowHeight: CGFloat = 60
 let AlbumListTitleFontSize: CGFloat = 17
-let AlbumListCell_Identifier: String = "AlbumListCell"
+let AlbumListCell_Identifier: String = "AlbumListCell_Identifier"
 
 // MARK: Photo Collection View
 let PhotoCollectionCell_NumOfPhotosInARow: Int = 4
@@ -81,7 +81,7 @@ let PhotoCollectionCell_CheckMarkImageMargin: CGFloat = 2 // 选择对号上、�
 let PhotoCollectionCell_XMargin: CGFloat = 2 // collectionViewCell左右侧间距
 let PhotoCollectionCell_YMargin = PhotoCollectionCell_XMargin // collectionViewCell上下侧间距
 let PhotoCollectionCell_PhotoWidth: Double = (Double(ScreenWidth) - (Double(PhotoCollectionCell_NumOfPhotosInARow - 1) + 2) * Double(PhotoCollectionCell_XMargin)) / 4
-let PhotoCollectionCell_Identifier: String = "PhotoCollectionCell"
+let PhotoCollectionCell_Identifier: String = "PhotoCollectionCell_Identifier"
 
 let PhotoCollection_BottomToolBarBgColor = RGBA(250, green: 250, blue: 250, alpha: 1)
 let PhotoCollection_BottomToolBarSeparatorColor = RGBA(180, green: 180, blue: 180, alpha: 1)
@@ -100,7 +100,7 @@ let PhotoCollection_BottomToolBarFontSize: CGFloat = 16
 let PhotoPreview_MaximumZoomScale: CGFloat = 2.0
 let PhotoPreview_MinumumZoomScale: CGFloat = 1.0
 
-let PhotoPreviewCell_Identifier: String = "PreviewPhotoCell"
+let PhotoPreviewCell_Identifier: String = "PhotoPreviewCell_Identifier"
 
 let PhotoPreview_BottomToolBarBgColor = RGBA(100, green: 100, blue: 100, alpha: 0.6)
 let PhotoPreview_BottomToolBarHeight: CGFloat = 49
@@ -123,10 +123,10 @@ let PostPhoto_CollectionCellMargin: CGFloat = 5
 let PostPhoto_NumOfPhotosInARow: Int = 4
 let PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth = (ScreenWidth - 2 * PostPhoto_TextViewHorizontalMargin - (CGFloat(PostPhoto_NumOfPhotosInARow) - 1) * PostPhoto_CollectionCellMargin) / CGFloat(PostPhoto_NumOfPhotosInARow)
 
-let PostPhoto_PhotoAndTextCell_PhotoCollectionCell_Identifier: String = "PostPhoto_PhotoAndTextCell_PhotoCollectionCell"
-let PostPhoto_PhotoAndTextTableViewCell: String = "PostPhoto_PhotoAndTextTableViewCell"
-let PostPhoto_TextViewHeight: CGFloat = 80
-let PostPhoto_CollectionViewTopMargin: CGFloat = 10
+let PostPhotoFirstCell_PhotoCollectionCell_Identifier: String = "PostPhotoFirstCell_PhotoCollectionCell_Identifier"
+let PostPhotoFirstCell_Identifier: String = "PostPhotoFirstCell_Identifier"
+let PostPhotoFirstCell_TextViewHeight: CGFloat = 80
+let PostPhotoFirstCell_CollectionViewTopMargin: CGFloat = 10
 
 
 

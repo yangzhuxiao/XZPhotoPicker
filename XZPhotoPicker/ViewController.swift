@@ -14,7 +14,7 @@ class ViewController: UIViewController {
 //    private var date1: NSDate?
 //    private var date2: NSDate?
     
-    private let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray  )
+    private let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
     private var showPostVC = {() -> () in }
     init() {
         super.init(nibName: nil, bundle: nil)
