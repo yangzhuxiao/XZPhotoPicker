@@ -125,7 +125,7 @@ extension XZPostPhotoController: UITableViewDelegate {
 extension XZPostPhotoController {
     func cancelButtonPressed(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(true) {
-            emptySelectedAssets()
+            EmptySelectedAssets()
         }
     }
     func sendButtonPressed(sender: UIBarButtonItem) {

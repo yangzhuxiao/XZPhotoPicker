@@ -45,18 +45,18 @@ class XZPreviewPhotoController: UIViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.navigationBarHidden = true
         collectionView?.setContentOffset(CGPointMake(ScreenWidth * CGFloat(currentIndex), 0), animated: false)
         refreshNavAndToolBarDataStatus()
+        
+        self.navigationController?.navigationBarHidden = true
+        HideStatusbar()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
         self.navigationController?.navigationBarHidden = false
-    }
-    
-    override func prefersStatusBarHidden() -> Bool {
-        return true
+        ShowStatusbar()
     }
 }
 
@@ -225,7 +225,7 @@ private extension XZPreviewPhotoController {
     func refreshNavAndToolBarDataStatus() {
         let currentModel: XZAssetModel = models[currentIndex]
         
-        currentModel.selected = assetIsSelected(currentModel.asset)
+        currentModel.selected = AssetIsSelected(currentModel.asset)
         checkmarkButton.selected = currentModel.selected
         
         circleOfNumberImageView.hidden = SelectedAssets.count <= 0 ? true : false
@@ -251,7 +251,7 @@ extension XZPreviewPhotoController {
         
         weak var weakSelf = self
         if currentModel.selected {
-            addAssetModelToSelected(currentModel, { (fail) in
+            AddAssetModelToSelected(currentModel, { (fail) in
                 weakSelf!.checkmarkButton.selected = false
                 currentModel.selected = false
                 }, { (success) in
@@ -259,7 +259,7 @@ extension XZPreviewPhotoController {
                     UIView.oscillatoryAnimationWithLayer(weakSelf!.circleOfNumberImageView.layer, max: 1.4, min: 0.7)
             })
         } else {
-            removeAsset(currentModel.asset, { (success) in
+            RemoveAsset(currentModel.asset, { (success) in
                 weakSelf!.refreshNavAndToolBarDataStatus()
                 UIView.oscillatoryAnimationWithLayer(weakSelf!.circleOfNumberImageView.layer, max: 1.4, min: 0.7)
             })
@@ -274,8 +274,8 @@ extension XZPreviewPhotoController {
         if sender === okButton {
             if SelectedAssets.count == 0 {
                 let currentModel: XZAssetModel = models[currentIndex]
-                currentModel.selected = assetIsSelected(currentModel.asset)
-                addAssetModelToSelected(currentModel, { (fail) in
+                currentModel.selected = AssetIsSelected(currentModel.asset)
+                AddAssetModelToSelected(currentModel, { (fail) in
                     let alert = UIAlertView(title: nil, message: "选择照片失败", delegate: nil, cancelButtonTitle: "OK")
                     alert.show()
                     return

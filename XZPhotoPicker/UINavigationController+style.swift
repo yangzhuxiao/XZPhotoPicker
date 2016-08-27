@@ -10,14 +10,13 @@ import Foundation
 import UIKit
 
 extension UINavigationController {
-    override public func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
-    }
     public override func viewDidLoad() {
         super.viewDidLoad()
         navigationBar.barTintColor = NavBgColor
         navigationBar.tintColor = UIColor.whiteColor()
         navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         navigationBar.translucent = false
+        
+        LightContentStatusBar()
     }
 }

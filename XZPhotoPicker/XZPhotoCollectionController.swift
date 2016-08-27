@@ -237,7 +237,7 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
         let currentAsset: PHAsset = model.result[indexPath.row] as! PHAsset
         let currentModel = XZAssetModel(asset: currentAsset)
         
-        currentModel.selected = assetIsSelected(currentAsset)
+        currentModel.selected = AssetIsSelected(currentAsset)
         cell.model = currentModel
 
         weak var weakCell = cell
@@ -246,11 +246,11 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
         cell.didSelectPhotoClosure = { (selected: Bool, sender: UIButton) -> () in
             weakCell?.model!.selected = selected
             if !selected {
-                removeAsset(weakCell!.model!.asset, { (success) in
+                RemoveAsset(weakCell!.model!.asset, { (success) in
                     // do nothing here
                 })
             } else if selected {
-                addAssetModelToSelected(weakCell!.model!, { (fail) in
+                AddAssetModelToSelected(weakCell!.model!, { (fail) in
                     sender.selected = false
                     }, { (success) in
                         // do nothing here
@@ -303,7 +303,7 @@ extension XZPhotoCollectionController {
     }
     func cancelButtonPressed(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(true) {
-            emptySelectedAssets()
+            EmptySelectedAssets()
         }
     }
 }

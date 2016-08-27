@@ -15,6 +15,7 @@ class XZPostPhotoPreviewController: UIViewController {
     var models: Array<XZAssetModel>
     var currentIndex: Int = 0
     private var collectionView: UICollectionView?
+    private var cvYOrigin: CGFloat = 0
     
     required init(currentIndex: Int, models: Array<XZAssetModel>) {
         self.models = models
@@ -28,21 +29,21 @@ class XZPostPhotoPreviewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setup()
-        layoutView()
-        style()
-        
+        self.automaticallyAdjustsScrollViewInsets = false
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        setup()
+        layoutView()
+        style()
         moveToCurrentIndex()
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        let vcStack = self.navigationController!.viewControllers
-        let postVC = vcStack[vcStack.count - 1] as! XZPostPhotoController // already poped from stack
+        
+        let postVC = self.navigationController!.topViewController as! XZPostPhotoController // already poped from stack
         postVC.shouldReloadData()
     }
     
@@ -64,7 +65,9 @@ private extension XZPostPhotoPreviewController {
                 return flowLayout
             }
             if collectionView == nil {
-                collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout())
+                cvYOrigin = -self.navigationController!.navigationBar.frame.size.height - StatusBarHeight
+
+                collectionView = UICollectionView(frame: CGRectMake(0, cvYOrigin, ScreenWidth, ScreenHeight), collectionViewLayout: collectionViewFlowLayout())
                 collectionView?.registerClass(XZPreviewPhotoCell.self, forCellWithReuseIdentifier: PhotoPreviewCell_Identifier)
                 collectionView?.contentSize = CGSize(width: CGFloat(models.count) * ScreenWidth, height: 0)
                 collectionView?.dataSource = self
@@ -86,10 +89,10 @@ private extension XZPostPhotoPreviewController {
 private extension XZPostPhotoPreviewController {
     func layoutView() {
         constrain(collectionView!) { (view) in
-            view.top == view.superview!.top
-            view.left == view.superview!.left
-            view.right == view.superview!.right
-            view.bottom == view.superview!.bottom
+//            view.top == view.superview!.top
+//            view.left == view.superview!.left
+//            view.right == view.superview!.right
+//            view.bottom == view.superview!.bottom
         }
     }
 }
@@ -101,7 +104,6 @@ private extension XZPostPhotoPreviewController {
             collectionView?.pagingEnabled = true
         }
         func styleNaviBar() {
-            navigationController?.navigationBar.barStyle = UIBarStyle.Black
         }
         
         styleCollectionView()
@@ -111,9 +113,19 @@ private extension XZPostPhotoPreviewController {
     
     func toggleNaviBarDisplayStatus() {
         if navigationController?.navigationBarHidden == true {
-            navigationController?.setNavigationBarHidden(false, animated: true)
+            UIView.animateWithDuration(0.5, animations: {
+                self.navigationController!.navigationBarHidden = false
+                self.collectionView!.frame = CGRectOffset(self.collectionView!.frame, 0, self.cvYOrigin)
+                ShowStatusbar()
+                }, completion: { (success) in
+            })
         } else {
-            navigationController?.setNavigationBarHidden(true, animated: true)
+            UIView.animateWithDuration(0.5, animations: {
+                self.navigationController!.navigationBarHidden = true
+                self.collectionView!.frame = CGRectOffset(self.collectionView!.frame, 0, -self.cvYOrigin)
+                HideStatusbar()
+                }, completion: { (success) in
+            })
         }
     }
     
@@ -161,7 +173,7 @@ extension XZPostPhotoPreviewController {
     func trashButtonPressed(sender: UIBarButtonItem) {
         let currentModel: XZAssetModel = models[currentIndex]
         weak var weakSelf = self
-        removeAsset(currentModel.asset) { (success) in
+        RemoveAsset(currentModel.asset) { (success) in
             if SelectedAssets.count == 0 {
                 weakSelf!.navigationController!.popViewControllerAnimated(true)
                 return

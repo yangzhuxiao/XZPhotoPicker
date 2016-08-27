@@ -10,13 +10,26 @@ import Foundation
 import UIKit
 import Photos
 
-// MARK: Global Variables
+// MARK: Global
 var ImageScaleFactor: CGFloat = 0
 let MaxPhotosCount: Int = 9
+var LightContentStatusBar = {() -> () in
+    UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: false)
+}
+var DarkContentStatusBar = {() -> () in
+    UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.Default, animated: false)
+}
+var HideStatusbar = {() -> () in
+    UIApplication.sharedApplication().setStatusBarHidden(true, withAnimation: UIStatusBarAnimation.Slide)
+}
+var ShowStatusbar = {() -> () in
+    UIApplication.sharedApplication().setStatusBarHidden(false, withAnimation: UIStatusBarAnimation.Slide)
+}
+var StatusBarHeight = UIApplication.sharedApplication().statusBarFrame.size.height
 
 // MARK: Selected Assets
 var SelectedAssets: Array<XZAssetModel> = []
-var addAssetModelToSelected = {(model: XZAssetModel, fail: (fail: Bool) -> Void, success: (success: Bool) -> Void) -> () in
+var AddAssetModelToSelected = {(model: XZAssetModel, fail: (fail: Bool) -> Void, success: (success: Bool) -> Void) -> () in
     if SelectedAssets.count >= MaxPhotosCount {
         let alert = UIAlertView(title: nil, message: "最多可以选\(MaxPhotosCount)张", delegate: nil, cancelButtonTitle: "OK")
         alert.show()
@@ -26,7 +39,7 @@ var addAssetModelToSelected = {(model: XZAssetModel, fail: (fail: Bool) -> Void,
         success(success: true)
     }
 }
-var assetIsSelected = {(asset: PHAsset) -> (Bool) in
+var AssetIsSelected = {(asset: PHAsset) -> (Bool) in
     for model in SelectedAssets {
         if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(asset) {
             return true
@@ -34,7 +47,7 @@ var assetIsSelected = {(asset: PHAsset) -> (Bool) in
     }
     return false
 }
-var removeAsset = {(asset: PHAsset, completion: (success: Bool) -> ()) -> () in
+var RemoveAsset = {(asset: PHAsset, completion: (success: Bool) -> ()) -> () in
     var success: Bool = false
     for model in SelectedAssets {
         if XZImageManager.manager.getAssetIdentifier(model.asset) == XZImageManager.manager.getAssetIdentifier(asset) {
@@ -53,7 +66,7 @@ var removeAsset = {(asset: PHAsset, completion: (success: Bool) -> ()) -> () in
         alert.show()
     }
 }
-var emptySelectedAssets = {() -> () in
+var EmptySelectedAssets = {() -> () in
     SelectedAssets.removeAll()
 }
 

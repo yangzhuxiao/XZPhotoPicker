@@ -235,7 +235,7 @@ extension ViewController {
     func image(image: UIImage, didFinishSavingWithError error: NSError, contextInfo info: UnsafePointer<Void>) {
         weak var weakSelf = self
         let newAssetModel: XZAssetModel = XZImageManager.manager.getLastPhotoFromCameraRoll()
-        addAssetModelToSelected(newAssetModel, { (fail) in
+        AddAssetModelToSelected(newAssetModel, { (fail) in
             
             weakSelf!.activityIndicator.stopAnimating()
 

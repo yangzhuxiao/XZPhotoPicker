@@ -120,7 +120,7 @@ extension XZAlbumListController: UITableViewDelegate {
 extension XZAlbumListController {
     func cancelButtonPressed(sender: UIBarButtonItem) {
         dismissViewControllerAnimated(true) {
-            emptySelectedAssets()
+            EmptySelectedAssets()
         }
     }
 }
