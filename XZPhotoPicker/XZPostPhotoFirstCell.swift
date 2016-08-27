@@ -15,7 +15,9 @@ class XZPostPhotoFirstCell: UITableViewCell {
     private var textView: UITextView?
     private var collectionView: UICollectionView?
     private var placeholderLabel: UILabel?
+    
     var goToPostPreviewBlock = {(currentIndex: Int) -> () in }
+    var addButtonPressedBlock = {(maxPhotosCount: Int) -> () in }
     
     var assetModels: Array<XZAssetModel>? {
         didSet {
@@ -165,6 +167,8 @@ extension XZPostPhotoFirstCell: UICollectionViewDelegate {
         // go to preview page
         if SelectedAssets.count < 9 && indexPath.row == SelectedAssets.count {
             // clicked "+" button
+            LeftMaxPhotosCount = MaxPhotosCount - SelectedAssets.count
+            addButtonPressedBlock(LeftMaxPhotosCount)
         } else {
             goToPostPreviewBlock(indexPath.row)
         }

@@ -34,7 +34,7 @@ class XZImageManager: NSObject {
         let sing1 = XZImageManager.manager
         let sing2 = XZImageManager.manager
         if sing1 === sing2 {
-            print("Singleton clas 'XZImageManager' it is!")
+//            print("Singleton clas 'XZImageManager' it is!")
         }
     }
 }

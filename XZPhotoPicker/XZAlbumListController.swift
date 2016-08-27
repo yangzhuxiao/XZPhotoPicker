@@ -28,7 +28,6 @@ class XZAlbumListController: UIViewController {
         setup()
         layout()
         style()
-//        loadData()
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -79,10 +78,12 @@ private extension XZAlbumListController {
 // MARK: Load data
 private extension XZAlbumListController {
     func loadData() {
+        activityIndicator.startAnimating()
         weak var weakSelf = self
         XZImageManager.manager.getAllAlbums { (models: Array<XZAlbumModel>) in
             weakSelf?.albums = NSMutableArray(array: models)
             weakSelf?.tableView.reloadData()
+            weakSelf!.activityIndicator.stopAnimating()
         }
     }
 }

@@ -14,7 +14,6 @@ class ViewController: UIViewController {
 //    private var date1: NSDate?
 //    private var date2: NSDate?
     
-    private let activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
     private var showPostVC = {() -> () in }
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -139,12 +138,10 @@ extension ViewController {
         XZImageManager.manager.authorizationStatusForCamera({ 
             // authorized
             // turn on camera
-            print("camera roll images count before taking photo: \(XZImageManager.manager.getCameraRollAlbum()?.count)")
             weak var weakSelf = self
             weakSelf!.takeAPhoto()
             }, notDetermined: {
                 // 可能是第一次访问相机
-                print("camera roll images count before taking photo: \(XZImageManager.manager.getCameraRollAlbum()?.count)")
                 weak var weakSelf = self
                 weakSelf!.takeAPhoto()
             }, restricted: { 
@@ -206,11 +203,11 @@ extension ViewController {
     func goToAlbum() {
         let albumVC = XZAlbumListController()
         let albumNav = UINavigationController(rootViewController: albumVC)
-        presentViewController(albumNav, animated: true, completion: {
-//                self.date2 = NSDate()
-//                let timeInterval = self.date2!.timeIntervalSinceDate(self.date1!)
-//                print("time interval is: \(timeInterval)")
-        })
+        if let cameraRollModel = XZImageManager.manager.getCameraRollAlbum() {
+            let cameraRollVC: XZPhotoCollectionController = XZPhotoCollectionController(model: cameraRollModel)
+            albumNav.viewControllers.append(cameraRollVC)
+            presentViewController(albumNav, animated: true, completion: nil)
+        }
     }
     
     func takeAPhoto() {
@@ -224,12 +221,6 @@ extension ViewController {
             let alert = UIAlertView(title: "无法访问相机", message: nil, delegate: nil, cancelButtonTitle: "确定")
             alert.show()
         }
-    }
-    
-    func getLastPhoto() {
-//        let newAssetModel: XZAssetModel = XZImageManager.manager.getLastPhotoFromCameraRoll()
-        
-        print("camera roll images count after taking photo: \(XZImageManager.manager.getCameraRollAlbum()?.count)")
     }
     
     func image(image: UIImage, didFinishSavingWithError error: NSError, contextInfo info: UnsafePointer<Void>) {
@@ -259,7 +250,7 @@ extension ViewController: UIImagePickerControllerDelegate {
         
         dismissViewControllerAnimated(true, completion: nil)
         let originImage: UIImage = info[UIImagePickerControllerOriginalImage] as! UIImage
-        print("origin Image Size: (width: \(originImage.size.width), (height: \(originImage.size.height)))")
+//        print("origin Image Size: (width: \(originImage.size.width), (height: \(originImage.size.height)))")
         UIImageWriteToSavedPhotosAlbum(originImage, self, #selector(ViewController.image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
     
