@@ -17,6 +17,9 @@ class XZPostPhotoPreviewController: UIViewController {
     private var collectionView: UICollectionView?
     private var cvYOrigin: CGFloat = 0
     
+    private let setAsCoverButton = UIButton()
+    var shouldReloadDataBlock = {() -> () in}
+    
     required init(currentIndex: Int, models: Array<XZAssetModel>) {
         self.models = models
         self.currentIndex = currentIndex
@@ -80,8 +83,14 @@ private extension XZPostPhotoPreviewController {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Trash, target: self, action: #selector(XZPostPhotoPreviewController.trashButtonPressed(_:)))
         }
         
+        func setupSetAsCoverButton() {
+            view.addSubview(setAsCoverButton)
+            setAsCoverButton.addTarget(self, action: #selector(XZPostPhotoPreviewController.setAsCoverButtonPressed(_:)), forControlEvents: .TouchUpInside)
+        }
+        
         setupCollectinView()
         setupNaviBar()
+        setupSetAsCoverButton()
     }
 }
 
@@ -89,6 +98,12 @@ private extension XZPostPhotoPreviewController {
 private extension XZPostPhotoPreviewController {
     func layoutView() {
         constrain(collectionView!) { (view) in
+        }
+        constrain(setAsCoverButton) { (view) in
+            view.height == 49
+            view.bottom == view.superview!.bottom - 10
+            view.centerX == view.superview!.centerX
+            view.width == view.height * 2
         }
     }
 }
@@ -101,10 +116,20 @@ private extension XZPostPhotoPreviewController {
         }
         func styleNaviBar() {
         }
+        func styleSetAsCoverButton() {
+            setAsCoverButton.setTitle("设为主图", forState: .Normal)
+            setAsCoverButton.setTitleColor(UIColor.yellowColor(), forState: .Normal)
+            setAsCoverButton.titleLabel?.font = UIFont.systemFontOfSize(17)
+            setAsCoverButton.backgroundColor = RGBA(0, green: 0, blue: 0, alpha: 0.5)
+            
+            setAsCoverButton.layer.cornerRadius = 5.0
+        }
         
         styleCollectionView()
         styleNaviBar()
-        refreshNaviTitle()
+        styleSetAsCoverButton()
+        
+        refreshNaviTitleAndSetAsCoverButton()
     }
     
     func toggleNaviBarDisplayStatus() {
@@ -113,6 +138,7 @@ private extension XZPostPhotoPreviewController {
                 self.navigationController!.navigationBarHidden = false
                 self.collectionView!.frame = CGRectOffset(self.collectionView!.frame, 0, self.cvYOrigin)
                 ShowStatusbar()
+                self.setAsCoverButton.hidden = false
                 }, completion: { (success) in
             })
         } else {
@@ -120,13 +146,19 @@ private extension XZPostPhotoPreviewController {
                 self.navigationController!.navigationBarHidden = true
                 self.collectionView!.frame = CGRectOffset(self.collectionView!.frame, 0, -self.cvYOrigin)
                 HideStatusbar()
+                self.setAsCoverButton.hidden = true
                 }, completion: { (success) in
             })
         }
     }
     
-    func refreshNaviTitle() {
+    func refreshNaviTitleAndSetAsCoverButton() {
         navigationItem.title = String(currentIndex + 1) + "/" + String(models.count)
+        if currentIndex >= 1 {
+            setAsCoverButton.hidden = false
+        } else {
+            setAsCoverButton.hidden = true
+        }
     }
 }
 
@@ -159,7 +191,7 @@ extension XZPostPhotoPreviewController: UICollectionViewDelegate {
         
         if theIndex != currentIndex {
             currentIndex = theIndex
-            refreshNaviTitle()
+            refreshNaviTitleAndSetAsCoverButton()
         }
     }
 }
@@ -176,8 +208,23 @@ extension XZPostPhotoPreviewController {
             }
             weakSelf!.models = SelectedAssets
             weakSelf!.collectionView!.reloadData()
-            weakSelf!.refreshNaviTitle()
+            weakSelf!.refreshNaviTitleAndSetAsCoverButton()
             weakSelf!.moveToCurrentIndex()
+        }
+    }
+    func setAsCoverButtonPressed(sender: UIButton) {
+        if currentIndex == 0 {
+            return
+        }
+        
+        if sender === setAsCoverButton {
+            let currentModel: XZAssetModel = SelectedAssets[currentIndex]
+            weak var weakSelf = self
+            RemoveAsset(currentModel.asset, { (success) in
+                SelectedAssets.insert(currentModel, atIndex: 0)
+                weakSelf!.shouldReloadDataBlock()
+                weakSelf!.navigationController!.popViewControllerAnimated(true)
+            })
         }
     }
 }

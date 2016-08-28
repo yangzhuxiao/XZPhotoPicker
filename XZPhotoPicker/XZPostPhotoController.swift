@@ -103,6 +103,9 @@ extension XZPostPhotoController: UITableViewDataSource {
         weak var weakSelf = self
         cell.goToPostPreviewBlock = {(currentIndex: Int) -> () in
             let postPreviewVC = XZPostPhotoPreviewController(currentIndex: currentIndex, models: SelectedAssets)
+            postPreviewVC.shouldReloadDataBlock = {() -> () in
+                weakSelf!.shouldReloadData()
+            }
             weakSelf!.navigationController?.pushViewController(postPreviewVC, animated: true)
         }
         cell.addButtonPressedBlock = {() -> () in
