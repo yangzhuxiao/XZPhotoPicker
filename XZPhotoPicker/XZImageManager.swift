@@ -53,6 +53,25 @@ extension XZImageManager {
             restricted()
         }
     }
+    func requestAuthorizationForAlbum() {
+        PHPhotoLibrary.requestAuthorization {(_) in
+        }
+    }
+    func requestAuthorizationForCamera() {
+        AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: nil)
+    }
+    func isAlbumAccessGranted() -> Bool {
+        if PHPhotoLibrary.authorizationStatus() == PHAuthorizationStatus.Authorized {
+            return true
+        }
+        return false
+    }
+    func isCameraAccessGranted() -> Bool {
+        if AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) == AVAuthorizationStatus.Authorized {
+            return true
+        }
+        return false
+    }
     func authorizationStatusForCamera(authorized: ()->(), notDetermined: ()->(), restricted: ()->(), denied: () -> ()) {
         switch AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) {
         case .Authorized:
@@ -203,22 +222,6 @@ private extension XZImageManager {
         return XZAlbumModel(result: result, name: name, count: result.count)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

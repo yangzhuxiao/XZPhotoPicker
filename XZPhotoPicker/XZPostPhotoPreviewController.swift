@@ -138,7 +138,11 @@ private extension XZPostPhotoPreviewController {
                 self.navigationController!.navigationBarHidden = false
                 self.collectionView!.frame = CGRectOffset(self.collectionView!.frame, 0, self.cvYOrigin)
                 ShowStatusbar()
-                self.setAsCoverButton.hidden = false
+                
+                if self.currentIndex != 0 {
+                    self.setAsCoverButton.hidden = false
+                }
+                
                 }, completion: { (success) in
             })
         } else {
@@ -146,7 +150,11 @@ private extension XZPostPhotoPreviewController {
                 self.navigationController!.navigationBarHidden = true
                 self.collectionView!.frame = CGRectOffset(self.collectionView!.frame, 0, -self.cvYOrigin)
                 HideStatusbar()
-                self.setAsCoverButton.hidden = true
+                
+                if self.currentIndex != 0 {
+                    self.setAsCoverButton.hidden = true
+                }
+
                 }, completion: { (success) in
             })
         }

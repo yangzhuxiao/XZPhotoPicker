@@ -14,6 +14,10 @@ class ViewController: UIViewController {
 //    private var date1: NSDate?
 //    private var date2: NSDate?
     
+    var timerAlbum: NSTimer?
+    var timerCamera: NSTimer?
+    var timerAlbumInCamera: NSTimer?
+
     private var showPostVC = {() -> () in }
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -37,13 +41,10 @@ class ViewController: UIViewController {
 // MARK: Actions
 extension ViewController {
     func cameraButtonPressed(sender: UIBarButtonItem) {
-        
 //        date1 = NSDate()
-        
         // old way - much faster
         oldActionSheetWay()
-        
-        // new way
+        // new way - significantly slower
 //        newAlertControllerWay()
     }
     
@@ -87,7 +88,7 @@ extension ViewController: UIActionSheetDelegate {
     }
 }
 
-// MARK: 
+// MARK: UIAlertViewDelegate
 extension ViewController: UIAlertViewDelegate {
     func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
         if buttonIndex == 1 {
@@ -97,48 +98,39 @@ extension ViewController: UIAlertViewDelegate {
     }
 }
 
-// MARK: Authorization
+// MARK: Timer handler
 extension ViewController {
-    func authorizationWithAlbum() {
-        XZImageManager.manager.authorizationStatusForAlbum({
-            // authorized
-            // go to photo album
-            weak var weakSelf = self
-            weakSelf!.goToCameraRoll()
-            }, notDetermined: {
-                // 可能是第一次访问相册
-                weak var weakSelf = self
-                weakSelf!.goToAlbumSetting()
-            }, restricted: {
-                weak var weakSelf = self
-                weakSelf!.goToAlbumSetting()
-        }) {
-            // denied
-            weak var weakSelf = self
-            weakSelf!.goToAlbumSetting()
+    func observeAlbumAuthorizationStatusChange() {
+        if XZImageManager.manager.isAlbumAccessGranted() {
+            timerAlbum?.invalidate()
+            timerAlbum = nil
+            
+            activityIndicator.startAnimating()
+            goToCameraRoll()
         }
     }
-    
-    func authorizationWithCamera() {
-        XZImageManager.manager.authorizationStatusForCamera({ 
-            // authorized
-            // turn on camera
-            weak var weakSelf = self
-            weakSelf!.takeAPhoto()
-            }, notDetermined: {
-                // 可能是第一次访问相机
-                weak var weakSelf = self
-                weakSelf!.takeAPhoto()
-            }, restricted: { 
-                weak var weakSelf = self
-                weakSelf!.goToCameraSetting()
-        }) {
-            // denied
-            weak var weakSelf = self
-            weakSelf!.goToCameraSetting()
+    func observeCameraAuthorizationStatusChange() {
+        if XZImageManager.manager.isCameraAccessGranted() {
+            timerCamera?.invalidate()
+            timerCamera = nil
+            
+            takeAPhoto()
         }
     }
-    
+    func observeAlbumAuthorizationStatusChangeForCamera() {
+        if XZImageManager.manager.isAlbumAccessGranted() {
+            let originImage: UIImage = timerAlbumInCamera!.userInfo![UIImagePickerControllerOriginalImage] as! UIImage
+            timerAlbumInCamera?.invalidate()
+            timerAlbumInCamera = nil
+            
+            activityIndicator.startAnimating()
+            UIImageWriteToSavedPhotosAlbum(originImage, self, #selector(ViewController.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        }
+    }
+}
+
+// MARK: Settings
+extension ViewController {
     func goToAlbumSetting() {
         // new way
         func alertControllerWay() {
@@ -158,7 +150,7 @@ extension ViewController {
             alert.show()
         }
         
-//        alertControllerWay()
+        //        alertControllerWay()
         alertViewWay()
     }
     
@@ -181,11 +173,59 @@ extension ViewController {
             alert.show()
         }
         
-//        alertControllerWay()
+        //        alertControllerWay()
         alertViewWay()
+    }
+}
+
+// MARK: Authorization
+extension ViewController {
+    func authorizationWithAlbum() {
+        XZImageManager.manager.authorizationStatusForAlbum({
+            // authorized
+            // go to photo album
+            weak var weakSelf = self
+            weakSelf!.goToCameraRoll()
+            }, notDetermined: {
+                // 可能是第一次访问相册
+                weak var weakSelf = self
+                XZImageManager.manager.requestAuthorizationForAlbum()
+                // 使用timer的原因是，实际对比时间发现，如果直接用PHPhotoLibrary.requestAuthorization方法的回调block，如果用户好几秒不点“同意”使用相册，则点击同意后，到present出来照片列表会花好几秒钟时间
+                weakSelf!.timerAlbum = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(ViewController.observeAlbumAuthorizationStatusChange), userInfo: nil, repeats: true)
+            }, restricted: {
+                weak var weakSelf = self
+                weakSelf!.goToAlbumSetting()
+        }) {
+            // denied
+            weak var weakSelf = self
+            weakSelf!.goToAlbumSetting()
+        }
+    }
+    
+    func authorizationWithCamera() {
+        XZImageManager.manager.authorizationStatusForCamera({ 
+            // authorized
+            // turn on camera
+            weak var weakSelf = self
+            weakSelf!.takeAPhoto()
+            }, notDetermined: {
+                // 可能是第一次访问相机
+                weak var weakSelf = self
+                XZImageManager.manager.requestAuthorizationForCamera()
+                weakSelf!.timerCamera = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(ViewController.observeCameraAuthorizationStatusChange), userInfo: nil, repeats: true)
+            }, restricted: {
+                weak var weakSelf = self
+                weakSelf!.goToCameraSetting()
+        }) {
+            // denied
+            weak var weakSelf = self
+            weakSelf!.goToCameraSetting()
+        }
     }
     
     func goToCameraRoll() {
+//        let date1 = NSDate()
+
         weak var weakSelf = self
         let albumVC = XZAlbumListController(isFromViewController: true)
         let albumNav = UINavigationController(rootViewController: albumVC)
@@ -197,7 +237,19 @@ extension ViewController {
                 weakSelf!.presentViewController(postNav, animated: true, completion: nil)
             }
             albumNav.viewControllers.append(cameraRollVC)
-            presentViewController(albumNav, animated: true, completion: nil)
+            
+//            let date2 = NSDate()
+//            let duration = date2.timeIntervalSinceDate(date1)
+//            print("present started time duration: \(duration)")
+            
+            presentViewController(albumNav, animated: true, completion: {
+                
+//                let date2 = NSDate()
+//                let duration = date2.timeIntervalSinceDate(date1)
+//                print("present finished time duration: \(duration)")
+                
+                weakSelf!.activityIndicator.stopAnimating()
+            })
         }
     }
     
@@ -218,11 +270,8 @@ extension ViewController {
         weak var weakSelf = self
         let newAssetModel: XZAssetModel = XZImageManager.manager.getLastPhotoFromCameraRoll()
         AddAssetModelToSelected(newAssetModel, { (fail) in
-            
             weakSelf!.activityIndicator.stopAnimating()
-
             }) { (success) in
-                
                 // present Post VC
                 let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
                 let postNav = UINavigationController(rootViewController: postVC)
@@ -237,12 +286,23 @@ extension ViewController {
 extension ViewController: UIImagePickerControllerDelegate {
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
         
-        activityIndicator.startAnimating()
-        
         dismissViewControllerAnimated(true, completion: nil)
-        let originImage: UIImage = info[UIImagePickerControllerOriginalImage] as! UIImage
-//        print("origin Image Size: (width: \(originImage.size.width), (height: \(originImage.size.height)))")
-        UIImageWriteToSavedPhotosAlbum(originImage, self, #selector(ViewController.image(_:didFinishSavingWithError:contextInfo:)), nil)
+        
+        weak var weakSelf = self
+        XZImageManager.manager.authorizationStatusForAlbum({ 
+            weakSelf!.activityIndicator.startAnimating()
+            let originImage: UIImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+            UIImageWriteToSavedPhotosAlbum(originImage, self, #selector(ViewController.image(_:didFinishSavingWithError:contextInfo:)), nil)
+            }, notDetermined: { 
+                XZImageManager.manager.requestAuthorizationForAlbum()
+                weakSelf!.timerAlbumInCamera = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(ViewController.observeAlbumAuthorizationStatusChangeForCamera), userInfo: info, repeats: true)
+            }, restricted: { 
+                weak var weakSelf = self
+                weakSelf!.goToAlbumSetting()
+            }) { 
+                weak var weakSelf = self
+                weakSelf!.goToAlbumSetting()
+        }
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
