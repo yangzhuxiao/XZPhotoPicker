@@ -19,6 +19,7 @@ class XZPhotoCollectionController: UIViewController {
     private let circleOfNumberImageView = UIView()
     private let toolBarView = UIView()
     private var shouldScrollToBottom: Bool
+    
     var shouldPresentPostVCBlock = {() -> () in}
     var isFromViewController: Bool
     var shouldReloadDataBlock = {() -> () in}
@@ -270,7 +271,9 @@ extension XZPhotoCollectionController: UICollectionViewDataSource {
 // MARK: UICollectionViewDelegate
 extension XZPhotoCollectionController: UICollectionViewDelegate {
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let previewVC = XZPreviewPhotoController(currentIndex: indexPath.row, models: model.models)
+        let previewVC = XZPreviewPhotoController(currentIndex: indexPath.row, models: model.models, isFromViewController: isFromViewController)
+        previewVC.shouldReloadDataBlock = shouldReloadDataBlock
+        previewVC.shouldPresentPostVCBlock = shouldPresentPostVCBlock
         self.navigationController?.pushViewController(previewVC, animated: true)
     }
 }
@@ -300,7 +303,9 @@ extension XZPhotoCollectionController {
                     }
                 }
                 if currentIndex >= 0 {
-                    let previewVC = XZPreviewPhotoController(currentIndex: currentIndex, models: model.models)
+                    let previewVC = XZPreviewPhotoController(currentIndex: currentIndex, models: model.models, isFromViewController: isFromViewController)
+                    previewVC.shouldReloadDataBlock = shouldReloadDataBlock
+                    previewVC.shouldPresentPostVCBlock = shouldPresentPostVCBlock
                     self.navigationController?.pushViewController(previewVC, animated: true)
                 }
             }

@@ -131,7 +131,7 @@ let PhotoPreview_NavBarHeight: CGFloat = 64
 
 // MARK: Post Photo and Text View
 let textViewPlaceholder = "想说点什么"
-let PostPhoto_CoverPhotoLabelBgColor = RGBA(255, green: 255, blue: 0, alpha: 0.5)
+let PostPhoto_CoverPhotoLabelBgColor = RGBA(255, green: 255, blue: 0, alpha: 0.6)
 let PostPhoto_TextViewHorizontalMargin: CGFloat = 10
 let PostPhoto_CollectionCellMargin: CGFloat = 5
 let PostPhoto_NumOfPhotosInARow: Int = 4

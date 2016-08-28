@@ -26,9 +26,15 @@ class XZPreviewPhotoController: UIViewController {
     private let numberOfSelectedLabel = UILabel()
     private let circleOfNumberImageView = UIView()
     
-    required init(currentIndex: Int, models: Array<XZAssetModel>) {
+    var shouldPresentPostVCBlock = {() -> () in}
+    var isFromViewController: Bool
+    var shouldReloadDataBlock = {() -> () in}
+
+    
+    required init(currentIndex: Int, models: Array<XZAssetModel>, isFromViewController: Bool) {
         self.models = models
         self.currentIndex = currentIndex
+        self.isFromViewController = isFromViewController
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -282,6 +288,15 @@ extension XZPreviewPhotoController {
                     }, { (success) in
                         // do nothing
                 })
+            }
+            
+            dismissViewControllerAnimated(true, completion: nil)
+            // come from ViewController
+            if isFromViewController {
+                shouldPresentPostVCBlock()
+            } // come from PostPhoto
+            else {
+                shouldReloadDataBlock()
             }
             
             weak var presentingVC = self.presentingViewController
