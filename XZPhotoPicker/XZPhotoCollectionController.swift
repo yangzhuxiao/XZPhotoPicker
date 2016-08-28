@@ -19,12 +19,16 @@ class XZPhotoCollectionController: UIViewController {
     private let circleOfNumberImageView = UIView()
     private let toolBarView = UIView()
     private var shouldScrollToBottom: Bool
+    var shouldPresentPostVCBlock = {() -> () in}
+    var isFromViewController: Bool
+    var shouldReloadDataBlock = {() -> () in}
     
     var model: XZAlbumModel
     
-    required init(model: XZAlbumModel) {
+    required init(model: XZAlbumModel, isFromViewController: Bool) {
         self.model = model
         self.shouldScrollToBottom = true
+        self.isFromViewController = isFromViewController
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -275,13 +279,14 @@ extension XZPhotoCollectionController: UICollectionViewDelegate {
 extension XZPhotoCollectionController {
     func okButtonPressed(sender: UIButton) {
         if sender === okButton {
-            weak var presentingVC = self.presentingViewController
-            dismissViewControllerAnimated(false, completion: {
-                let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
-                let postNav = UINavigationController(rootViewController: postVC)
-                presentingVC!.presentViewController(postNav, animated: true, completion: {
-                })
-            })
+            dismissViewControllerAnimated(true, completion: nil)
+            // come from ViewController
+            if isFromViewController {
+                shouldPresentPostVCBlock()
+            } // come from PostPhoto
+            else {
+                shouldReloadDataBlock()
+            }
         }
     }
     func previewButtonPressed(sender: UIButton) {

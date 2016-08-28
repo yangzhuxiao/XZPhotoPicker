@@ -27,27 +27,12 @@ class ViewController: UIViewController {
         title = "发现"
         view.backgroundColor = UIColor.whiteColor()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Camera, target: self, action: #selector(ViewController.cameraButtonPressed(_:)))
-        
-//        setupActivityIndicator()
-//        layoutActivityIndicator()
     }
     
     func setupActivityIndicator() {
         view.addSubview(activityIndicator)
     }
 }
-
-// MARK: Layout
-//private extension ViewController {
-//    func layoutActivityIndicator() {
-//        constrain(activityIndicator) { (view) in
-//            view.centerX == view.superview!.centerX
-//            view.centerY == view.superview!.centerY
-//            view.width == 100
-//            view.height == 100
-//        }
-//    }
-//}
 
 // MARK: Actions
 extension ViewController {
@@ -119,7 +104,7 @@ extension ViewController {
             // authorized
             // go to photo album
             weak var weakSelf = self
-            weakSelf!.goToAlbum()
+            weakSelf!.goToCameraRoll()
             }, notDetermined: {
                 // 可能是第一次访问相册
                 weak var weakSelf = self
@@ -200,11 +185,17 @@ extension ViewController {
         alertViewWay()
     }
     
-    func goToAlbum() {
-        let albumVC = XZAlbumListController()
+    func goToCameraRoll() {
+        weak var weakSelf = self
+        let albumVC = XZAlbumListController(isFromViewController: true)
         let albumNav = UINavigationController(rootViewController: albumVC)
         if let cameraRollModel = XZImageManager.manager.getCameraRollAlbum() {
-            let cameraRollVC: XZPhotoCollectionController = XZPhotoCollectionController(model: cameraRollModel)
+            let cameraRollVC: XZPhotoCollectionController = XZPhotoCollectionController(model: cameraRollModel, isFromViewController: true)
+            cameraRollVC.shouldPresentPostVCBlock = {() -> () in
+                let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
+                let postNav = UINavigationController(rootViewController: postVC)
+                weakSelf!.presentViewController(postNav, animated: true, completion: nil)
+            }
             albumNav.viewControllers.append(cameraRollVC)
             presentViewController(albumNav, animated: true, completion: nil)
         }

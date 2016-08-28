@@ -82,7 +82,7 @@ private extension XZPostPhotoController {
     }
 }
 
-// MARK: 
+// MARK: UITableViewDataSource
 extension XZPostPhotoController: UITableViewDataSource {
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -105,7 +105,7 @@ extension XZPostPhotoController: UITableViewDataSource {
             let postPreviewVC = XZPostPhotoPreviewController(currentIndex: currentIndex, models: SelectedAssets)
             weakSelf!.navigationController?.pushViewController(postPreviewVC, animated: true)
         }
-        cell.addButtonPressedBlock = {(leftMaxPhotosCount: Int) -> () in
+        cell.addButtonPressedBlock = {() -> () in
             // 弹出alert
             let actionSheet: UIActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "取消", destructiveButtonTitle: nil, otherButtonTitles: "从手机相册选择", "拍照")
             actionSheet.showInView(weakSelf!.view)
@@ -156,7 +156,7 @@ extension XZPostPhotoController {
             // authorized
             // go to photo album
             weak var weakSelf = self
-            weakSelf!.goToAlbum()
+            weakSelf!.goToCameraRoll()
             }, notDetermined: {
                 // 可能是第一次访问相册
                 weak var weakSelf = self
@@ -209,10 +209,18 @@ extension XZPostPhotoController {
         alertViewWay()
     }
     
-    func goToAlbum() {
-        let albumVC = XZAlbumListController()
+    func goToCameraRoll() {
+        weak var weakSelf = self
+        let albumVC = XZAlbumListController(isFromViewController: false)
         let albumNav = UINavigationController(rootViewController: albumVC)
-        presentViewController(albumNav, animated: true, completion: nil)
+        if let cameraRollModel = XZImageManager.manager.getCameraRollAlbum() {
+            let cameraRollVC: XZPhotoCollectionController = XZPhotoCollectionController(model: cameraRollModel, isFromViewController: false)
+            cameraRollVC.shouldReloadDataBlock = {() -> () in
+                weakSelf!.shouldReloadData()
+            }
+            albumNav.viewControllers.append(cameraRollVC)
+            presentViewController(albumNav, animated: true, completion: nil)
+        }
     }
     
     func takeAPhoto() {
@@ -232,17 +240,10 @@ extension XZPostPhotoController {
         weak var weakSelf = self
         let newAssetModel: XZAssetModel = XZImageManager.manager.getLastPhotoFromCameraRoll()
         AddAssetModelToSelected(newAssetModel, { (fail) in
-            
             weakSelf!.activityIndicator.stopAnimating()
-            
         }) { (success) in
-            
-            // present Post VC
-            let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
-            let postNav = UINavigationController(rootViewController: postVC)
-            weakSelf!.presentViewController(postNav, animated: true, completion: {
-                weakSelf!.activityIndicator.stopAnimating()
-            })
+            weakSelf!.shouldReloadData()
+            weakSelf!.activityIndicator.stopAnimating()
         }
     }
 }
@@ -255,7 +256,6 @@ extension XZPostPhotoController: UIImagePickerControllerDelegate {
         
         dismissViewControllerAnimated(true, completion: nil)
         let originImage: UIImage = info[UIImagePickerControllerOriginalImage] as! UIImage
-//        print("origin Image Size: (width: \(originImage.size.width), (height: \(originImage.size.height)))")
         UIImageWriteToSavedPhotosAlbum(originImage, self, #selector(ViewController.image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
     

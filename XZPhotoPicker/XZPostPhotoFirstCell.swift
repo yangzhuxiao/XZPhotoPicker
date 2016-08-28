@@ -17,7 +17,7 @@ class XZPostPhotoFirstCell: UITableViewCell {
     private var placeholderLabel: UILabel?
     
     var goToPostPreviewBlock = {(currentIndex: Int) -> () in }
-    var addButtonPressedBlock = {(maxPhotosCount: Int) -> () in }
+    var addButtonPressedBlock = {() -> () in }
     
     var assetModels: Array<XZAssetModel>? {
         didSet {
@@ -55,33 +55,25 @@ private extension XZPostPhotoFirstCell {
             }
         }
         func setupCollectionView() {
-            if collectionView == nil {
-                func collectionViewFlowLayout() -> UICollectionViewFlowLayout {
-                    let flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-                    flowLayout.itemSize = CGSize(width: CGFloat(PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth),
-                                                 height: CGFloat(PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth))
-                    flowLayout.minimumInteritemSpacing = PostPhoto_CollectionCellMargin
-                    flowLayout.minimumLineSpacing = PostPhoto_CollectionCellMargin
-                    return flowLayout
-                }
-                
-                if collectionView == nil {
-                    
-                    let rows: Int = assetModels!.count / 4 + 1
-                    let collectionViewHeight = CGFloat(rows) * PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth + (CGFloat(rows) + 1) * PostPhoto_CollectionCellMargin
-                    let collectionViewWidth = ScreenWidth - 2 * PostPhoto_TextViewHorizontalMargin
-                    let collectionViewXOrigin = PostPhoto_TextViewHorizontalMargin
-                    let collectionViewYOrigin = PostPhotoFirstCell_TextViewHeight + PostPhotoFirstCell_CollectionViewTopMargin
-                    
-                    collectionView = UICollectionView(frame: CGRectMake(collectionViewXOrigin, collectionViewYOrigin, collectionViewWidth, collectionViewHeight), collectionViewLayout: collectionViewFlowLayout())
-                    collectionView!.dataSource = self
-                    collectionView!.delegate = self
-                    collectionView!.registerClass(XZPostPhotoFirstCell_PhotoCollectionCell.self, forCellWithReuseIdentifier: PostPhotoFirstCell_PhotoCollectionCell_Identifier)
-                    contentView.addSubview(collectionView!)
-                }
-                styleCollectionView()
+            func collectionViewFlowLayout() -> UICollectionViewFlowLayout {
+                let flowLayout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+                flowLayout.itemSize = CGSize(width: CGFloat(PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth),
+                                             height: CGFloat(PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth))
+                flowLayout.minimumInteritemSpacing = PostPhoto_CollectionCellMargin
+                flowLayout.minimumLineSpacing = PostPhoto_CollectionCellMargin
+                return flowLayout
             }
+            
+            if collectionView == nil {
+                collectionView = UICollectionView(frame: CGRectZero, collectionViewLayout: collectionViewFlowLayout())
+                collectionView!.dataSource = self
+                collectionView!.delegate = self
+                collectionView!.registerClass(XZPostPhotoFirstCell_PhotoCollectionCell.self, forCellWithReuseIdentifier: PostPhotoFirstCell_PhotoCollectionCell_Identifier)
+                contentView.addSubview(collectionView!)
+            }
+            styleCollectionView()
         }
+        
         func setupPlaceholderLabel() {
             if placeholderLabel == nil {
                 placeholderLabel = UILabel()
@@ -115,6 +107,14 @@ private extension XZPostPhotoFirstCell {
         textView?.font = UIFont.systemFontOfSize(14)
     }
     func styleCollectionView() {
+        let rows: Int = assetModels!.count / 4 + 1
+        let collectionViewHeight = CGFloat(rows) * PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth + (CGFloat(rows) + 1) * PostPhoto_CollectionCellMargin
+        let collectionViewWidth = ScreenWidth - 2 * PostPhoto_TextViewHorizontalMargin
+        let collectionViewXOrigin = PostPhoto_TextViewHorizontalMargin
+        let collectionViewYOrigin = PostPhotoFirstCell_TextViewHeight + PostPhotoFirstCell_CollectionViewTopMargin
+        
+        collectionView!.frame = CGRectMake(collectionViewXOrigin, collectionViewYOrigin, collectionViewWidth, collectionViewHeight)
+        
         collectionView?.backgroundColor = UIColor.whiteColor()
         collectionView?.scrollEnabled = false
     }
@@ -167,8 +167,7 @@ extension XZPostPhotoFirstCell: UICollectionViewDelegate {
         // go to preview page
         if SelectedAssets.count < 9 && indexPath.row == SelectedAssets.count {
             // clicked "+" button
-            LeftMaxPhotosCount = MaxPhotosCount - SelectedAssets.count
-            addButtonPressedBlock(LeftMaxPhotosCount)
+            addButtonPressedBlock()
         } else {
             goToPostPreviewBlock(indexPath.row)
         }

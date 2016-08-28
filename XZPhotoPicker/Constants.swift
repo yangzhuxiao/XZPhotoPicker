@@ -13,7 +13,6 @@ import Photos
 // MARK: Global
 var ImageScaleFactor: CGFloat = 0
 let MaxPhotosCount: Int = 9
-var LeftMaxPhotosCount: Int = 0
 
 var LightContentStatusBar = {() -> () in
     UIApplication.sharedApplication().setStatusBarStyle(UIStatusBarStyle.LightContent, animated: false)

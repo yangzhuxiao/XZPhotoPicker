@@ -14,8 +14,10 @@ import Cartography
 class XZAlbumListController: UIViewController {
     private var albums = NSMutableArray()
     private let tableView = UITableView()
-    
-    required init() {
+    var isFromViewController: Bool
+
+    required init(isFromViewController: Bool) {
+        self.isFromViewController = isFromViewController
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -108,8 +110,7 @@ extension XZAlbumListController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let selectedModel: XZAlbumModel = albums[indexPath.row] as! XZAlbumModel
-        navigationController?.pushViewController(XZPhotoCollectionController(model: selectedModel),
-                                                 animated: true)
+        navigationController?.pushViewController(XZPhotoCollectionController(model: selectedModel, isFromViewController: isFromViewController), animated: true)
     }
 }
 

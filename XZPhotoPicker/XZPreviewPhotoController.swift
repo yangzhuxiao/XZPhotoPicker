@@ -284,14 +284,20 @@ extension XZPreviewPhotoController {
                 })
             }
             
-            // dismiss photo-selection-related view, present post photo view
             weak var presentingVC = self.presentingViewController
-            dismissViewControllerAnimated(false, completion: {
-                let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
-                let postNav = UINavigationController(rootViewController: postVC)
-                presentingVC!.presentViewController(postNav, animated: true, completion: {
+            // come from ViewController
+            if presentingVC!.isKindOfClass(ViewController.self) {
+                dismissViewControllerAnimated(false, completion: {
+                    let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
+                    let postNav = UINavigationController(rootViewController: postVC)
+                    presentingVC!.presentViewController(postNav, animated: true, completion: {
+                    })
                 })
-            })
+            } // come from PostPhoto
+            else if presentingVC!.isKindOfClass(XZPostPhotoController.self) {
+                (presentingVC as! XZPostPhotoController).shouldReloadData()
+                dismissViewControllerAnimated(true, completion: nil)
+            }
         }
     }
 }
