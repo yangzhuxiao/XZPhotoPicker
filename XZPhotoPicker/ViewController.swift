@@ -28,8 +28,8 @@ class ViewController: UIViewController {
         view.backgroundColor = UIColor.whiteColor()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Camera, target: self, action: #selector(ViewController.cameraButtonPressed(_:)))
         
-        setupActivityIndicator()
-        layoutActivityIndicator()
+//        setupActivityIndicator()
+//        layoutActivityIndicator()
     }
     
     func setupActivityIndicator() {
@@ -38,16 +38,16 @@ class ViewController: UIViewController {
 }
 
 // MARK: Layout
-private extension ViewController {
-    func layoutActivityIndicator() {
-        constrain(activityIndicator) { (view) in
-            view.centerX == view.superview!.centerX
-            view.centerY == view.superview!.centerY
-            view.width == 100
-            view.height == 100
-        }
-    }
-}
+//private extension ViewController {
+//    func layoutActivityIndicator() {
+//        constrain(activityIndicator) { (view) in
+//            view.centerX == view.superview!.centerX
+//            view.centerY == view.superview!.centerY
+//            view.width == 100
+//            view.height == 100
+//        }
+//    }
+//}
 
 // MARK: Actions
 extension ViewController {
