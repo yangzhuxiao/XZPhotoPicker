@@ -45,6 +45,7 @@ private extension XZPostPhotoController {
             if tableView == nil {
                 tableView = UITableView(frame: CGRectMake(0, 0, ScreenWidth, ScreenHeight), style: UITableViewStyle.Plain)
                 tableView?.registerClass(XZPostPhotoFirstCell.self, forCellReuseIdentifier: PostPhotoFirstCell_Identifier)
+                tableView?.registerClass(XZPostPhotoLocationCell.self, forCellReuseIdentifier: PostPhotoLocationCell_Identifier)
                 tableView?.dataSource = self
                 tableView?.delegate = self
                 view.addSubview(tableView!)
@@ -88,40 +89,58 @@ extension XZPostPhotoController: UITableViewDataSource {
         return 1
     }
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        switch section {
-//        case 0:
-//            return 2
-//        default:
-//            return 2
-//        }
-        return 1
+        return 2
     }
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(PostPhotoFirstCell_Identifier) as! XZPostPhotoFirstCell
-        cell.assetModels = assetsArray
-        
-        weak var weakSelf = self
-        cell.goToPostPreviewBlock = {(currentIndex: Int) -> () in
-            let postPreviewVC = XZPostPhotoPreviewController(currentIndex: currentIndex, models: SelectedAssets)
-            postPreviewVC.shouldReloadDataBlock = {() -> () in
-                weakSelf!.shouldReloadData()
+        switch indexPath.row {
+        case 0:
+            let cell = tableView.dequeueReusableCellWithIdentifier(PostPhotoFirstCell_Identifier) as! XZPostPhotoFirstCell
+            cell.assetModels = assetsArray
+            
+            weak var weakSelf = self
+            cell.goToPostPreviewBlock = {(currentIndex: Int) -> () in
+                let postPreviewVC = XZPostPhotoPreviewController(currentIndex: currentIndex, models: SelectedAssets)
+                postPreviewVC.shouldReloadDataBlock = {() -> () in
+                    weakSelf!.shouldReloadData()
+                }
+                weakSelf!.navigationController?.pushViewController(postPreviewVC, animated: true)
             }
-            weakSelf!.navigationController?.pushViewController(postPreviewVC, animated: true)
+            cell.addButtonPressedBlock = {() -> () in
+                // 弹出alert
+                let actionSheet: UIActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "取消", destructiveButtonTitle: nil, otherButtonTitles: "从手机相册选择", "拍照")
+                actionSheet.showInView(weakSelf!.view)
+            }
+            return cell
+        case 1:
+            let cell = tableView.dequeueReusableCellWithIdentifier(PostPhotoLocationCell_Identifier) as! XZPostPhotoLocationCell
+            cell.setCellContentWithName("所在位置", icon: UIImage(named: "photoPreview_checkmark_checked"))
+            cell.selectionStyle = UITableViewCellSelectionStyle.None
+            return cell
+        default:
+            let cell = tableView.dequeueReusableCellWithIdentifier(PostPhotoLocationCell_Identifier) as! XZPostPhotoLocationCell
+            cell.setCellContentWithName("This is not supposed to show", icon: nil)
+            return cell
         }
-        cell.addButtonPressedBlock = {() -> () in
-            // 弹出alert
-            let actionSheet: UIActionSheet = UIActionSheet(title: nil, delegate: self, cancelButtonTitle: "取消", destructiveButtonTitle: nil, otherButtonTitles: "从手机相册选择", "拍照")
-            actionSheet.showInView(weakSelf!.view)
-        }
-        return cell
     }
 }
 
 // MARK: UITableViewDelegate
 extension XZPostPhotoController: UITableViewDelegate {
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        let rows: Int = assetsArray.count / 4 + 1
-        return PostPhotoFirstCell_TextViewHeight + CGFloat(rows) * PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth + (CGFloat(rows) + 1) * PostPhoto_CollectionCellMargin + PostPhotoFirstCell_CollectionViewTopMargin
+        switch indexPath.row {
+        case 0:
+            let rows: Int = assetsArray.count / 4 + 1
+            return PostPhotoFirstCell_TextViewHeight + CGFloat(rows) * PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth + (CGFloat(rows) + 1) * PostPhoto_CollectionCellMargin + PostPhotoFirstCell_CollectionViewTopMargin
+        case 1:
+            return 44
+        default:
+            return 0
+        }
+    }
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.row == 1 {
+            // go to location page
+        }
     }
     func scrollViewDidScroll(scrollView: UIScrollView) {
         let cell = tableView?.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! XZPostPhotoFirstCell

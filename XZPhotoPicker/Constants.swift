@@ -139,6 +139,8 @@ let PostPhoto_PhotoAndTextCell_CollectionViewCellItemWidth = (ScreenWidth - 2 * 
 
 let PostPhotoFirstCell_PhotoCollectionCell_Identifier: String = "PostPhotoFirstCell_PhotoCollectionCell_Identifier"
 let PostPhotoFirstCell_Identifier: String = "PostPhotoFirstCell_Identifier"
+let PostPhotoLocationCell_Identifier: String = "PostPhotoLocationCell_Identifier"
+
 let PostPhotoFirstCell_TextViewHeight: CGFloat = 80
 let PostPhotoFirstCell_CollectionViewTopMargin: CGFloat = 10
 

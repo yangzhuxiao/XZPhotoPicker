@@ -312,9 +312,10 @@ extension XZPhotoCollectionController {
         }
     }
     func cancelButtonPressed(sender: UIBarButtonItem) {
-        dismissViewControllerAnimated(true) {
+        if isFromViewController {
             EmptySelectedAssets()
         }
+        dismissViewControllerAnimated(true) { }
     }
 }
 

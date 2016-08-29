@@ -121,9 +121,10 @@ extension XZAlbumListController: UITableViewDelegate {
 // MARK: Actions
 extension XZAlbumListController {
     func cancelButtonPressed(sender: UIBarButtonItem) {
-        dismissViewControllerAnimated(true) {
+        if isFromViewController {
             EmptySelectedAssets()
         }
+        dismissViewControllerAnimated(true) { }
     }
 }
 
