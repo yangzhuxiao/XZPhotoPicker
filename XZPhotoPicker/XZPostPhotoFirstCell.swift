@@ -119,7 +119,7 @@ private extension XZPostPhotoFirstCell {
         collectionView?.scrollEnabled = false
     }
     func stylePlaceholderLabel() {
-        placeholderLabel?.text = textViewPlaceholder
+        placeholderLabel?.text = "想说点什么"
         placeholderLabel?.textColor = UIColor.lightGrayColor()
         placeholderLabel?.font = UIFont.systemFontOfSize(14)
     }
