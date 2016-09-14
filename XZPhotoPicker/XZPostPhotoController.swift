@@ -201,7 +201,7 @@ extension XZPostPhotoController {
             timerAlbumInCamera = nil
             
             activityIndicator.startAnimating()
-            UIImageWriteToSavedPhotosAlbum(originImage, self, #selector(ViewController.image(_:didFinishSavingWithError:contextInfo:)), nil)
+            UIImageWriteToSavedPhotosAlbum(originImage, self, #selector(XZPostPhotoController.image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
     }
 }
@@ -219,7 +219,7 @@ extension XZPostPhotoController {
                 weak var weakSelf = self
                 XZImageManager.manager.requestAuthorizationForAlbum()
                 // 使用timer的原因是，实际对比时间发现，如果直接用PHPhotoLibrary.requestAuthorization方法的回调block，如果用户好几秒不点“同意”使用相册，则点击同意后，到present出来照片列表会花好几秒钟时间
-                weakSelf!.timerAlbum = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(ViewController.observeAlbumAuthorizationStatusChange), userInfo: nil, repeats: true)
+                weakSelf!.timerAlbum = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(XZPostPhotoController.observeAlbumAuthorizationStatusChange), userInfo: nil, repeats: true)
             }, restricted: {
                 weak var weakSelf = self
                 weakSelf!.goToAlbumSetting()
@@ -240,7 +240,7 @@ extension XZPostPhotoController {
                 // 可能是第一次访问相机
                 weak var weakSelf = self
                 XZImageManager.manager.requestAuthorizationForCamera()
-                weakSelf!.timerCamera = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(ViewController.observeCameraAuthorizationStatusChange), userInfo: nil, repeats: true)
+                weakSelf!.timerCamera = NSTimer.scheduledTimerWithTimeInterval(0.2, target: self, selector: #selector(XZPostPhotoController.observeCameraAuthorizationStatusChange), userInfo: nil, repeats: true)
             }, restricted: {
                 weak var weakSelf = self
                 weakSelf!.goToCameraSetting()
