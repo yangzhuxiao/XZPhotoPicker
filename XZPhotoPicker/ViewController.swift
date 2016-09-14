@@ -32,10 +32,6 @@ class ViewController: UIViewController {
         view.backgroundColor = UIColor.whiteColor()
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.Camera, target: self, action: #selector(ViewController.cameraButtonPressed(_:)))
     }
-    
-    func setupActivityIndicator() {
-        view.addSubview(activityIndicator)
-    }
 }
 
 // MARK: Actions
@@ -227,8 +223,15 @@ extension ViewController {
 //        let date1 = NSDate()
 
         weak var weakSelf = self
+
         let albumVC = XZAlbumListController(isFromViewController: true)
+        albumVC.shouldPresentPostVCBlock = {() -> () in
+            let postVC: XZPostPhotoController = XZPostPhotoController(assets: SelectedAssets)
+            let postNav = UINavigationController(rootViewController: postVC)
+            weakSelf!.presentViewController(postNav, animated: true, completion: nil)
+        }
         let albumNav = UINavigationController(rootViewController: albumVC)
+        
         if let cameraRollModel = XZImageManager.manager.getCameraRollAlbum() {
             let cameraRollVC: XZPhotoCollectionController = XZPhotoCollectionController(model: cameraRollModel, isFromViewController: true)
             cameraRollVC.shouldPresentPostVCBlock = {() -> () in

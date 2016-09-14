@@ -15,6 +15,8 @@ class XZAlbumListController: UIViewController {
     private var albums = NSMutableArray()
     private let tableView = UITableView()
     var isFromViewController: Bool
+    var shouldPresentPostVCBlock = {() -> () in}
+    var shouldReloadDataBlock = {() -> () in}
 
     required init(isFromViewController: Bool) {
         self.isFromViewController = isFromViewController
@@ -114,7 +116,10 @@ extension XZAlbumListController: UITableViewDelegate {
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         let selectedModel: XZAlbumModel = albums[indexPath.row] as! XZAlbumModel
-        navigationController?.pushViewController(XZPhotoCollectionController(model: selectedModel, isFromViewController: isFromViewController), animated: true)
+        let collectionVC = XZPhotoCollectionController(model: selectedModel, isFromViewController: isFromViewController)
+        collectionVC.shouldPresentPostVCBlock = shouldPresentPostVCBlock
+        collectionVC.shouldReloadDataBlock = shouldReloadDataBlock
+        navigationController?.pushViewController(collectionVC, animated: true)
     }
 }
 
